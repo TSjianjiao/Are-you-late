@@ -35,3 +35,4 @@ yarn-error.log*
 
 # log
 !/src/log/*.log
+src/log/
