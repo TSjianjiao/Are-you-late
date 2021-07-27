@@ -32,7 +32,3 @@ yarn-error.log*
 
 # vercel
 .vercel
-
-# log
-!/src/log/*.log
-src/log/
