@@ -30,10 +30,18 @@ ws.addEventListener('message', async ({data: message}) => {
                                 return t.includes('#')
                             })
                             .exec()
-
+                          
     if(filterMsg) {
         const find = filterMsg.data.messageChain.find(i => i.type === 'Plain') as Plain
         const blockComand = find.text.split('#')
+
+        // 添加用户
+        await addUser({
+            qq: filterMsg.data.sender.id,
+            memberName: filterMsg.data.sender.memberName,
+            specialTitle: filterMsg.data.sender.specialTitle,
+        })
+
         if(blockComand.length === 2) {
             const comand = blockComand[1].split(' ')
             if(comand.length === 2) {
@@ -56,11 +64,6 @@ ws.addEventListener('message', async ({data: message}) => {
                     || words.includes('准时到')
                     || words.includes('准点到')
                 ) {
-                    await addUser({
-                        qq: filterMsg.data.sender.id,
-                        memberName: filterMsg.data.sender.memberName,
-                        specialTitle: filterMsg.data.sender.specialTitle,
-                    })
                     if(isSuccess) {
                         ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
                         .at(filterMsg.data.sender.id)
@@ -75,11 +78,7 @@ ws.addEventListener('message', async ({data: message}) => {
                         .exec()
                     }
                 }else if(words.includes('迟到')) {
-                    await addUser({
-                        qq: filterMsg.data.sender.id,
-                        memberName: filterMsg.data.sender.memberName,
-                        specialTitle: filterMsg.data.sender.specialTitle,
-                    })
+
                     if(isSuccess) {
                         ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
                         .at(filterMsg.data.sender.id)
