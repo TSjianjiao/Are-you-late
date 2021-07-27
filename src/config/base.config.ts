@@ -7,8 +7,8 @@ export function getTodayWorkTime() {
   return dayjs().set('hours', 9).set('minutes', 30).set('seconds', 0)
 }
 
-const config = {
+const BaseConfig = {
   '迟到扣钱': 30,
   '上班时间': getTodayWorkTime
 }
-export default config
+export default BaseConfig

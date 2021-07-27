@@ -62,3 +62,17 @@ export interface Recall {
   /** messageid */
   target:number
 }
+
+/**
+ * 消息类型
+ */
+export const messageType = {
+  At: '@',
+  AtAll: '@全部',
+  Face: 'qq表情',
+  Plain: '文字',
+  Image: '图片',
+  FlashImage: '闪照',
+  Poke: '大表情',
+  Dice: '骰子',
+}

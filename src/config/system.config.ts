@@ -6,11 +6,11 @@ export interface SystemConfig {
   group_qq: number,
 }
 
-const config:SystemConfig  = {
+const SystemConfig:SystemConfig  = {
   wsPath: 'ws://ws.dangdangdang.top',
   verifyKey:  1234567890,
   bot_qq: 1092946821,
   group_qq: 599869861,
 }
 
-export default config
+export default SystemConfig

@@ -1,6 +1,7 @@
 import { Command } from '@/types/command'
 import { getSession } from '@/utils/session'
 import SendMessage from '@/utils/ws/sendMessage'
+import GetMessage, { GetMsg } from '@/utils/ws/getMessage'
 import ws from '@/utils/ws'
 import { Recall, SendFriendMessage, SendGroupMessage, SendNudge, SendTempMessage } from '@/types/sendMessage'
 
@@ -65,5 +66,8 @@ class ToolKit {
   }
 
   /** 获取某个消息 */
+  get<M extends GetMsg>(msg: any) {
+    return new GetMessage<M>(msg)
+  }
 }
 export default new ToolKit()

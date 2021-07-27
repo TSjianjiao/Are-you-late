@@ -12,7 +12,7 @@ ws.on('open', function open() {
 })
 ws.on('error', (err) => {
   console.log('websocket错误')
-  logger('ws', 'error', err)
+  logger('error', 'error', err)
 })
 ws.on('close', (code: number, message: string) => {
   console.log('websocket关闭')

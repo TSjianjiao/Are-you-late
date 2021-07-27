@@ -1,5 +1,5 @@
 import ws from '@/utils/ws'
-
+import { messageType } from '@/types/sendMessage'
 interface SendMessageListItem {
   methodName: string,
   params: any[],
@@ -92,7 +92,7 @@ export default class SendMessage {
     }
     this.sendMessageList.push({
       methodName: 'face',
-      params: [],
+      params: [faceId, name],
       method: () => {
         this.msg.content.messageChain.push({
           "type": "Face",
@@ -111,7 +111,7 @@ export default class SendMessage {
   plain(text: string) {
     this.sendMessageList.push({
       methodName: 'plain',
-      params: [],
+      params: [text],
       method: () => {
         this.msg.content.messageChain.push({
           "type": "Plain",
@@ -125,18 +125,19 @@ export default class SendMessage {
   /**
    * 发送图片
    */
-  image({
-    imageId,
-    url,
-    path,
-    base64
-  }:ImageP) {
+  image(img:ImageP) {
+    const {
+      imageId,
+      url,
+      path,
+      base64
+    } = img
     if(!imageId && !url && path && !base64) {
       return this
     }
     this.sendMessageList.push({
       methodName: 'image',
-      params: [],
+      params: [img],
       method: () => {
         this.msg.content.messageChain.push({
           type: 'Image',
@@ -153,18 +154,19 @@ export default class SendMessage {
   /**
    * 发送闪照
    */
-  flashImage({
-    imageId,
-    url,
-    path,
-    base64
-  }:ImageP) {
+  flashImage(img: ImageP) {
+    const {
+      imageId,
+      url,
+      path,
+      base64
+    } = img
     if(!imageId && !url && path && !base64) {
       return this
     }
     this.sendMessageList.push({
       methodName: 'flashImage',
-      params: [],
+      params: [img],
       method: () => {
         this.msg.content.messageChain.push({
           type: 'FlashImage',
@@ -185,7 +187,7 @@ export default class SendMessage {
   poke(name: keyof typeof Pock) {
     this.sendMessageList.push({
       methodName: 'poke',
-      params: [],
+      params: [name],
       method: () => {
         this.msg.content.messageChain.push({
           type: 'Poke',
@@ -203,7 +205,7 @@ export default class SendMessage {
   dice(value: number) {
     this.sendMessageList.push({
       methodName: 'dice',
-      params: [],
+      params: [value],
       method: () => {
         this.msg.content.messageChain.push({
           type: 'Dice',

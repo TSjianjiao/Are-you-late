@@ -25,11 +25,19 @@ export default {
       layout: {
         type: 'coloured'
       }
+    },
+    db: {
+      type: 'file',
+      filename: path.join(__dirname, '../log/db.log'),
+      layout: {
+        type: 'coloured'
+      }
     }
   },
   categories: {
     default: { appenders: ['defualt'], level: 'info' },
     error: { appenders: ['errors'], level: 'error' },
-    ws: {appenders: ['ws'], level: 'info' }
+    ws: {appenders: ['ws'], level: 'info' },
+    db: {appenders: ['db'], level: 'info' },
   }
 }
