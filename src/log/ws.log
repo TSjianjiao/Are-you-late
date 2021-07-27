@@ -7,3 +7,23 @@
 [32m[2021-07-26T16:36:22.991] [INFO] ws - [39m连接成功！
 [32m[2021-07-26T16:38:28.573] [INFO] ws - [39m连接成功！
 [32m[2021-07-26T16:55:05.909] [INFO] ws - [39m连接成功！
+[91m[2021-07-27T10:30:34.385] [ERROR] ws - [39mError: Unexpected server response: 502
+    at ClientRequest.<anonymous> (D:\Code\mirai\Are-you-late\node_modules\ws\lib\websocket.js:713:7)
+    at ClientRequest.emit (events.js:315:20)
+    at HTTPParser.parserOnIncomingClient [as onIncoming] (_http_client.js:641:27)
+    at HTTPParser.parserOnHeadersComplete (_http_common.js:126:17)
+    at Socket.socketOnData (_http_client.js:509:22)
+    at Socket.emit (events.js:315:20)
+    at addChunk (internal/streams/readable.js:309:12)
+    at readableAddChunk (internal/streams/readable.js:284:9)
+    at Socket.Readable.push (internal/streams/readable.js:223:10)
+    at TCP.onStreamRead (internal/stream_base_commons.js:188:23)
+[32m[2021-07-27T10:30:34.388] [INFO] ws - [39m连接关闭！code: 1006，message: 
+[32m[2021-07-27T10:34:52.708] [INFO] ws - [39m连接成功！
+[32m[2021-07-27T11:26:25.087] [INFO] ws - [39m连接成功！
+[32m[2021-07-27T11:42:17.739] [INFO] ws - [39m连接成功！
+[32m[2021-07-27T11:43:14.731] [INFO] ws - [39m连接成功！
+[32m[2021-07-27T11:47:35.089] [INFO] ws - [39m连接成功！
+[32m[2021-07-27T11:48:46.832] [INFO] ws - [39m连接成功！
+[32m[2021-07-27T11:55:24.144] [INFO] ws - [39m连接成功！
+[32m[2021-07-27T12:00:35.573] [INFO] ws - [39m连接成功！
