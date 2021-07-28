@@ -9,9 +9,11 @@ import { isBetCommand, isSignInCommand } from "@/utils/botCommand"
 import GameUser, { GameUser as GameUserIterface} from "@/db/model/gameUser"
 import SignIn, { SignIn as SignInInterface } from "@/db/model/signIn"
 import Point, { betType, betTypeText, Point as PointIterface} from "@/db/model/point"
+import UserPoints, { UserPoints as UserPointsInterface } from "@/db/model/userPoints"
 import { addOnlyOneDocument, getOneErrorMessage } from "@/db/util"
 
 import { GroupMessage, ReceiveMessage, Plain } from "@/types/receiveMessage"
+import randomPoint from "./utils/randomPoint"
 
 const lateRegexp = /迟到/gi
 const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到/gi
@@ -105,6 +107,17 @@ export default withMessage(async function (message) {
           .exec()
           return
         }
+        const getPoint = randomPoint()
+        
+        // UserPoints.findOneAndUpdate({
+        //   qq: targetQQ
+        // }, {
+        //   qq: targetQQ,
+        //   totalPoints: number
+        //   remainPoints: number
+        // }, {upsert: true}).exec()
+
+
         ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .at(targetQQ)
         .plain('签到成功！')
