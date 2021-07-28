@@ -93,7 +93,7 @@ export default class GetMessage<MessageType extends GetMsg> {
       params: [qq],
       method: () => {
         if(this.msg) {
-          if(this.msg.data.messageChain.some(i => i.target === qq)) {
+          if(this.msg.data.messageChain?.some(i => i.target === qq)) {
             this.filteredMsg = this.msg
           }else {
             this.filteredMsg = undefined
