@@ -12,10 +12,10 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    libraryTarget: 'umd',
+    libraryTarget: 'commonjs',
     // 全局名字
     library: 'Late',
-    globalObject: "this",
+    // globalObject: "this",
     clean: true
   },
   module: {

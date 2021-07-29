@@ -16,5 +16,19 @@ export const sessionSlice = createSlice({
   }
 })
 
+// // 处理异步
+// /**
+//  * 这个action返回一个函数
+//  * 这个函数返回一个promise
+//  */
+//  export const changeColor = () => (dispatch) => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       dispatch(randomColor())
+//       resolve(0)
+//     }, 1000)
+//   })
+// }
+
 export const { saveSession } = sessionSlice.actions
 export default sessionSlice.reducer

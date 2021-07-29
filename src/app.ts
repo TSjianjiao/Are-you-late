@@ -66,7 +66,7 @@ export default withMessage(async function (message) {
         if(Boolean(err)) {
           ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
           .at(targetQQ)
-          .plain(getOneErrorMessage(err))
+          .plain('\n' + getOneErrorMessage(err))
           .face(undefined, '请/gun')
           .exec()
           return
@@ -75,7 +75,7 @@ export default withMessage(async function (message) {
         // 成功提示
         ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .at(targetQQ)
-        .plain(`押注${betTypeText[type]}：${value}积分`)
+        .plain(`\n押注${betTypeText[type]}：${value}积分`)
         .face(undefined, '吃糖')
         .exec()
       }
@@ -90,12 +90,12 @@ export default withMessage(async function (message) {
           const  {success: addPointSuccess, message: addPointMessage} = await find.addPoint(userPoint)
           ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
           .at(targetQQ)
-          .plain(addPointSuccess ? `签到成功！\n获得积分${userPoint}!` : `签到失败：\n${addPointMessage}`)
+          .plain(addPointSuccess ? `\n签到成功！\n获得积分${userPoint}!` : `\n签到失败：\n${addPointMessage}`)
           .exec()
         }else {
           ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
           .at(targetQQ)
-          .plain(`签到失败：${SignInMessage}`)
+          .plain(`\n签到失败：${SignInMessage}`)
           .exec()
         }
       }
