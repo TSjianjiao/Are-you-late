@@ -1,13 +1,13 @@
 
 import { Document, Model, Query, Schema, connect, model, models } from 'mongoose';
 export interface GameUser {
-  qq: number;
+  qq: string;
   memberName: string;
   specialTitle: string;
 }
 const GameUserSchema = new Schema<GameUser>({
   qq: {
-    type: Schema.Types.Number,
+    type: Schema.Types.String,
     required: true
   },
   memberName: {

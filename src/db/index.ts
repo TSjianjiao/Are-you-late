@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import DBConfig from '@/config/db.config'
 import logger from "@/utils/logger"
 mongoose.set('useFindAndModify', false)
+
 mongoose.connect(DBConfig.uri, DBConfig.connectionOptions, err => {
   if (err) {
     console.log('[Mongoose🦢] 连接失败')
@@ -11,4 +12,5 @@ mongoose.connect(DBConfig.uri, DBConfig.connectionOptions, err => {
     logger('db', 'info', '[Mongoose🦢] 连接成功')
   }
 })
+
 export default mongoose

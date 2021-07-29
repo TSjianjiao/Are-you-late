@@ -13,7 +13,7 @@ export const betTypeText = {
 
 export interface Point {
   /** 用户qq */
-  qq: number
+  qq: string
   /** 押注分数 */
   betPoint: number
   /** 下注时间 默认今天 */
@@ -24,7 +24,7 @@ export interface Point {
 
 const PointSchema = new Schema<Point>({
   qq: {
-    type: Schema.Types.Number,
+    type: Schema.Types.String,
     required: true
   },
   betPoint: {

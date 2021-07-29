@@ -4,7 +4,7 @@ const DBConfig = {
     connectionOptions: {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      dbName: 'areyoulate'
+      dbName: 'areyoulate',
     },
 }
 export default DBConfig

@@ -56,6 +56,8 @@ export default class GetMessage<MessageType extends GetMsg> {
             }else {
               this.filteredMsg = undefined
             }
+          }else {
+            this.filteredMsg = undefined
           }
         }
       }
@@ -93,8 +95,12 @@ export default class GetMessage<MessageType extends GetMsg> {
       params: [qq],
       method: () => {
         if(this.msg) {
-          if(this.msg.data.messageChain?.some(i => i.target === qq)) {
-            this.filteredMsg = this.msg
+          if(this.msg.data.messageChain) {
+            if(this.msg.data.messageChain.some(i => i.target === qq)) {
+              this.filteredMsg = this.msg
+            }else {
+              this.filteredMsg = undefined
+            }
           }else {
             this.filteredMsg = undefined
           }

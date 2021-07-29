@@ -1,17 +1,26 @@
 
+import TransactionResponse from '@/types/error';
+import tryCatchPromise from '@/utils/decorators/tryCatchPromise';
 import dayjs from 'dayjs';
 import { Document, Model, Query, Schema, connect, model, models } from 'mongoose';
 
 export interface SignIn {
   /** 用户qq */
-  qq: number
+  qq: string
   /** 押注分数 默认今天*/
   signInTime?: Date
 }
+interface DocMethod {
 
-const SignInSchema = new Schema<SignIn>({
+}
+interface StaticMethod {
+  signIn(qq: string): Promise<TransactionResponse>
+}
+type ISignInModel = Model<SignIn, {}, DocMethod> & StaticMethod
+
+const SignInSchema = new Schema<SignIn, ISignInModel>({
   qq: {
-    type: Schema.Types.Number,
+    type: Schema.Types.String,
     required: true
   },
   signInTime: {
@@ -21,5 +30,26 @@ const SignInSchema = new Schema<SignIn>({
   }
 })
 
-// 防止重复定义模型
-export default (models && models.SignIn) || model<SignIn>('SignIn', SignInSchema)
+class LoadClass {
+  @tryCatchPromise('签到失败！')
+  static async signIn(this: SignIn & Model<SignIn>, qq: string) {
+    const find = await this.findOne({
+      qq,
+      signInTime: {
+        $gt: dayjs().startOf('date').toDate()
+      }
+    }).exec()
+    if(!find) {
+      await this.create({
+        qq
+      })
+    }else {
+      throw new Error('今天已签到')
+    }
+  }
+}
+SignInSchema.loadClass(LoadClass)
+// 创建表 实例化Schema
+const SignInModel = model<SignIn, ISignInModel>('SignIn', SignInSchema)
+
+export default SignInModel

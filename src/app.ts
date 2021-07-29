@@ -7,19 +7,20 @@ import withMessage from "@/utils/HOF/withMessage"
 import { isBetCommand, isSignInCommand } from "@/utils/botCommand"
 
 import GameUser, { GameUser as GameUserIterface} from "@/db/model/gameUser"
-import SignIn, { SignIn as SignInInterface } from "@/db/model/signIn"
+import SignInModel from "@/db/model/signIn"
+import UserPointsModel from "@/db/model/userPoints"
 import Point, { betType, betTypeText, Point as PointIterface} from "@/db/model/point"
-import UserPoints, { UserPoints as UserPointsInterface } from "@/db/model/userPoints"
+
 import { addOnlyOneDocument, getOneErrorMessage } from "@/db/util"
 
 import { GroupMessage, ReceiveMessage, Plain } from "@/types/receiveMessage"
 import randomPoint from "./utils/randomPoint"
+import logger from "./utils/logger"
 
 const lateRegexp = /迟到/gi
 const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到/gi
 
 export default withMessage(async function (message) {
-
   // 筛选消息
   const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(message)
                           .filterByMessageChainType('GroupMessage')
@@ -78,51 +79,25 @@ export default withMessage(async function (message) {
         .face(undefined, '吃糖')
         .exec()
       }
-      // else {
-      //     ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
-      //     .at(targetQQ)
-      //     .plain('命令格式错误\n正确格式：#迟到 [积分数]')
-      //     .face(undefined, '擦汗/ch')
-      //     .exec()
-      //     return
-      // }
-
 
       //////////////////////////////////// 签到流程 ////////////////////////////////////
       if(isSignInCommand(find.text)) {
-        const [err, success] = await addOnlyOneDocument<SignInInterface>({
-          qq: targetQQ,
-          signInTime: {
-            $gt: dayjs().startOf('date').toDate()
-          }
-        }, {
-          qq: targetQQ,
-        }, SignIn)
-
-        if(err) {
+        // 随机发积分
+        const userPoint = randomPoint()
+        const find = await UserPointsModel.findByQQ(targetQQ)
+        const { success: SignInSuccess, message: SignInMessage }  = await SignInModel.signIn(targetQQ)
+        if(SignInSuccess) {
+          const  {success: addPointSuccess, message: addPointMessage} = await find.addPoint(userPoint)
           ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
           .at(targetQQ)
-          .plain(getOneErrorMessage(err))
-          .face(undefined, '请/gun')
+          .plain(addPointSuccess ? `签到成功！\n获得积分${userPoint}!` : `签到失败：\n${addPointMessage}`)
           .exec()
-          return
+        }else {
+          ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
+          .at(targetQQ)
+          .plain(`签到失败：${SignInMessage}`)
+          .exec()
         }
-        const getPoint = randomPoint()
-        
-        // UserPoints.findOneAndUpdate({
-        //   qq: targetQQ
-        // }, {
-        //   qq: targetQQ,
-        //   totalPoints: number
-        //   remainPoints: number
-        // }, {upsert: true}).exec()
-
-
-        ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
-        .at(targetQQ)
-        .plain('签到成功！')
-        .exec()
       }
-
   }
 })

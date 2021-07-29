@@ -42,7 +42,7 @@ export interface CommonMessage {
 export interface FriendMessage extends CommonMessage {
   type: "FriendMessage",
   sender: {
-      id: number,
+      id: string,
       nickname: string,
       remark: string
   },
@@ -52,7 +52,7 @@ export interface FriendMessage extends CommonMessage {
 export interface GroupMessage extends CommonMessage  {
   "type": "GroupMessage",
   "sender": {
-      "id": number,
+      "id": string,
       "memberName": string,
       "specialTitle": string,
       "permission": string,
@@ -60,7 +60,7 @@ export interface GroupMessage extends CommonMessage  {
       "lastSpeakTimestamp": number,
       "muteTimeRemaining": number,
       "group": {
-          "id": number,
+          "id": string,
           "name": string,
           "permission": string,
       },
@@ -71,7 +71,7 @@ export interface GroupMessage extends CommonMessage  {
 export interface TempMessage extends CommonMessage {
   "type": "TempMessage",
   "sender": {
-      "id": number,
+      "id": string,
       "memberName": string,
       "specialTitle": string
       "permission": string,
@@ -90,7 +90,7 @@ export interface TempMessage extends CommonMessage {
 export interface StrangerMessage extends CommonMessage {
   "type": "StrangerMessage",
   "sender": {
-      "id": number,
+      "id": string,
       "nickname": string,
       "remark": string
   },
@@ -100,7 +100,7 @@ export interface StrangerMessage extends CommonMessage {
 export interface OtherClientMessage extends CommonMessage {
   "type": "OtherClientMessage",
   "sender": {
-      "id": number,
+      "id": string,
       "platform": string
   },
 }
@@ -119,9 +119,9 @@ export interface Source {
 export interface Quote {
   "type": "Quote",
   "id": number,
-  "groupId": number,
-  "senderId": number,
-  "targetId": number,
+  "groupId": string,
+  "senderId": string,
+  "targetId": string,
   /** 跟消息链一样 */
   "origin": any[]
 }

@@ -38,7 +38,7 @@ export interface SendFriendMessage {
  */
 export interface SendTempMessage {
   sessionKey: string,
-  qq:number,
+  qq:string,
   group:number,
   messageChain: any[]
 }
@@ -48,7 +48,7 @@ export interface SendTempMessage {
  */
 export interface SendNudge {
   sessionKey:string,
-  target:number,
+  target:string,
   /** 戳一戳接受主体(上下文), 戳一戳信息会发送至该主体, 为群号/好友QQ号 */
   subject:number,
   kind:"Friend" | "Group" | "Stranger"
@@ -60,7 +60,7 @@ export interface SendNudge {
 export interface Recall {
   sessionKey:string,
   /** messageid */
-  target:number
+  target:string
 }
 
 /**

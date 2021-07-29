@@ -50,7 +50,7 @@ export default class SendMessage {
    * @param target 目标qq号
    * @param display At时显示的文字，发送消息时无效，自动使用群名片
    */
-  at(target: number, display = '') {
+  at(target: string, display = '') {
     this.sendMessageList.push({
       methodName: 'at',
       params: [target, display],
