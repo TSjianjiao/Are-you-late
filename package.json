@@ -4,8 +4,8 @@
   "description": "摆子哥今天迟到了吗？",
   "main": "lib/index.js",
   "scripts": {
-    "start": "npx ts-node -r tsconfig-paths/register .\\src\\index.ts",
-    "dev": "npx ts-node-dev --inspect -r tsconfig-paths/register .\\src\\index.ts",
+    "start": "npx ts-node -r tsconfig-paths/register src/index.ts",
+    "dev": "npx ts-node-dev --inspect -r tsconfig-paths/register src/index.ts",
     "build": "gulp build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
