@@ -16,7 +16,7 @@ module.exports = {
     production : {
       user : 'root',
       host : '8.130.48.20',
-      ref  : 'origin/main',
+      ref  : 'origin/matser',
       repo : 'git@github.com:TSjianjiao/Are-you-late.git',
       path : '/usr/local/Code/are-you-late',
       'pre-deploy-local': 'echo \'本地脚本!\'',
