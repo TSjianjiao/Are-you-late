@@ -4,7 +4,7 @@ module.exports = {
     name: 'are-you-late',
     script: path.join(__dirname, 'src', 'index.ts'),
     interpreter: './node_modules/.bin/ts-node',
-    interpreter_args: '-r tsconfig-paths/register .\\src\\index.ts',
+    interpreter_args: '-r tsconfig-paths/register src/index.ts',
     watch: false,
     env: {},
     env_production: {
