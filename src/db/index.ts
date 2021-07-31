@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 import DBConfig from '@/config/db.config'
-import logger from "@/utils/logger"
+import logger from '@/utils/logger'
 mongoose.set('useFindAndModify', false)
 
 mongoose.connect(DBConfig.uri, DBConfig.connectionOptions, err => {

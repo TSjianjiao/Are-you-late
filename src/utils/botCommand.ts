@@ -9,8 +9,8 @@ export function isBetCommand(text: string): [words, value] {
   if(blockComand.length === 2) {
     const comand = blockComand[1].split(' ')
     if(comand.length === 2) {
-        const [words, value] = comand
-        return [words, value]
+      const [words, value] = comand
+      return [words, value]
     }
   }
   return ['', '']
@@ -24,7 +24,7 @@ export function isSignInCommand(text: string): Boolean {
   const blockComand = text.split('#')
   if(blockComand.length === 2) {
     if(regexp.test(blockComand[1])) {
-        return true
+      return true
     }
   }
   return false

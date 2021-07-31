@@ -1,4 +1,4 @@
-import { Code } from "./code";
+import { Code } from './code'
 
 export interface ReceiveMessage<D> {
   /** 消息同步的字段 */
@@ -12,7 +12,7 @@ export interface ReceiveMessage<D> {
 // 消息类型：GroupMessage\FriendMessage\TempMessage\各类Event
 
 export interface MessageData<T> {
-  type: T["type"],
+  type: T['type'],
   messageChain: [
     Source,
     ...Array<any>
@@ -40,7 +40,7 @@ export interface CommonMessage {
 }
 /** 好友消息 */
 export interface FriendMessage extends CommonMessage {
-  type: "FriendMessage",
+  type: 'FriendMessage',
   sender: {
       id: string,
       nickname: string,
@@ -50,58 +50,58 @@ export interface FriendMessage extends CommonMessage {
 
 /** 群消息 */
 export interface GroupMessage extends CommonMessage  {
-  "type": "GroupMessage",
-  "sender": {
-      "id": string,
-      "memberName": string,
-      "specialTitle": string,
-      "permission": string,
-      "joinTimestamp": number,
-      "lastSpeakTimestamp": number,
-      "muteTimeRemaining": number,
-      "group": {
-          "id": string,
-          "name": string,
-          "permission": string,
+  'type': 'GroupMessage',
+  'sender': {
+      'id': string,
+      'memberName': string,
+      'specialTitle': string,
+      'permission': string,
+      'joinTimestamp': number,
+      'lastSpeakTimestamp': number,
+      'muteTimeRemaining': number,
+      'group': {
+          'id': string,
+          'name': string,
+          'permission': string,
       },
   },
 }
 
 /**  群临时消息 */
 export interface TempMessage extends CommonMessage {
-  "type": "TempMessage",
-  "sender": {
-      "id": string,
-      "memberName": string,
-      "specialTitle": string
-      "permission": string,
-      "joinTimestamp": number,
-      "lastSpeakTimestamp": number,
-      "muteTimeRemaining": number,
-      "group": {
-          "id": number,
-          "name": string,
-          "permission": string,
+  'type': 'TempMessage',
+  'sender': {
+      'id': string,
+      'memberName': string,
+      'specialTitle': string
+      'permission': string,
+      'joinTimestamp': number,
+      'lastSpeakTimestamp': number,
+      'muteTimeRemaining': number,
+      'group': {
+          'id': number,
+          'name': string,
+          'permission': string,
       },
   },
 }
 
 /**  陌生人消息 */
 export interface StrangerMessage extends CommonMessage {
-  "type": "StrangerMessage",
-  "sender": {
-      "id": string,
-      "nickname": string,
-      "remark": string
+  'type': 'StrangerMessage',
+  'sender': {
+      'id': string,
+      'nickname': string,
+      'remark': string
   },
 }
 
 /**  其他客户端消息 */
 export interface OtherClientMessage extends CommonMessage {
-  "type": "OtherClientMessage",
-  "sender": {
-      "id": string,
-      "platform": string
+  'type': 'OtherClientMessage',
+  'sender': {
+      'id': string,
+      'platform': string
   },
 }
 
@@ -109,42 +109,42 @@ export interface OtherClientMessage extends CommonMessage {
 
 /** 消息链第一个元素，用于标识 */
 export interface Source {
-  "type": "Source",
+  'type': 'Source',
   /** 消息的识别号，用于引用回复 */
-  "id": number,
-  "time": number
+  'id': number,
+  'time': number
 }
 
 /** 引用 */
 export interface Quote {
-  "type": "Quote",
-  "id": number,
-  "groupId": string,
-  "senderId": string,
-  "targetId": string,
+  'type': 'Quote',
+  'id': number,
+  'groupId': string,
+  'senderId': string,
+  'targetId': string,
   /** 跟消息链一样 */
-  "origin": any[]
+  'origin': any[]
 }
 
 export interface Plain {
-  "type": string,
-  "text": string
+  'type': string,
+  'text': string
 }
 
 // 三个参数任选其一，出现多个参数时，按照imageId > url > path > base64的优先级
 export interface Image {
-  "type": "Image",
-  "imageId": string,  //群图片格式
+  'type': 'Image',
+  'imageId': string,  //群图片格式
   //"imageId": "/f8f1ab55-bf8e-4236-b55e-955848d7069f"      //好友图片格式
-  "url": string,
-  "path": string,
-  "base64": string
+  'url': string,
+  'path': string,
+  'base64': string
 }
 
 export interface At {
-  "type": "At",
-  "target": number,
-  "display": string
+  'type': 'At',
+  'target': number,
+  'display': string
 }
 
 
