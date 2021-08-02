@@ -79,7 +79,7 @@ export default class GetMessage<MessageType extends GetMsg> {
    * @param qq 默认是bot的qq
    */
   @filter<MessageType>()
-  filterByTaget(qq: number = SystemConfig.bot_qq, message?: MessageType) {
+  filterByTaget(qq: string = SystemConfig.bot_qq, message?: MessageType) {
   	if(message) {
   		if(message.data.messageChain) {
   			if(message.data.messageChain.some(i => i.target === qq)) {

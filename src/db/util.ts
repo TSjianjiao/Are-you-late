@@ -1,5 +1,5 @@
-import logger from "@/utils/logger"
-import { Model } from "mongoose"
+import logger from '@/utils/logger'
+import { Model } from 'mongoose'
 
 export interface ModelError {
   [k:string]: {
@@ -18,15 +18,15 @@ export interface ModelError {
 export async function addOnlyOneDocument<D>(id:Object, data: D, model: Model<any>):Promise<[ModelError, boolean]> {
   const find = await model.find(id).exec()
   if(find.length > 0) {
-      return [{foo: {reason:{message: '已有记录'}}}, false]
+    return [{foo: {reason:{message: '已有记录'}}}, false]
   }else {
-      try {
-          await model.create(data)
-      }catch(err) {
-          logger('db', 'error', err.errors)
-          return [err.errors, false]
-      }
-      return [null, true]
+    try {
+      await model.create(data)
+    }catch(err) {
+      logger('db', 'error', err.errors)
+      return [err.errors, false]
+    }
+    return [null, true]
   }
 }
 

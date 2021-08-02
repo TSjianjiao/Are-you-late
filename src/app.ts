@@ -9,14 +9,14 @@ import { isBetCommand, isSignInCommand } from '@/utils/botCommand'
 import GameUser from '@/db/model/gameUser'
 import SignInModel from '@/db/model/signIn'
 import UserPointsModel from '@/db/model/userPoints'
-import Point, { betType, betTypeText, Point as PointIterface} from '@/db/model/point'
+import bet, { betType, betTypeText, Bet} from '@/db/model/bet'
 
 import { addOnlyOneDocument, getOneErrorMessage } from '@/db/util'
 
 import { GroupMessage, ReceiveMessage, Plain } from '@/types/receiveMessage'
 import randomPoint from './utils/randomPoint'
 import { EventFlow } from './utils/ws'
-
+import BetModel from '@/db/model/bet'
 
 
 // export default withMessage(async function (message) {
@@ -104,7 +104,6 @@ import { EventFlow } from './utils/ws'
 
 // 	}
 // })
-
 // 添加用户
 EventFlow.addUser = async (context) => {
   const { message } = context
@@ -124,7 +123,7 @@ EventFlow.addUser = async (context) => {
   }, {upsert: true}).exec()
 }
 
-// 筛选消息
+// 筛选命令 #xxx 消息
 EventFlow.filter = (context) => {
   const { message } = context
   const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(message)
@@ -137,16 +136,16 @@ EventFlow.filter = (context) => {
     })
     .exec()
   // 把筛选后的消息带在上下文中
-  context.filterMsg = filterMsg
-  context.filterText = filterMsg?.data?.messageChain?.find(i => i.type === 'Plain')?.text ?? ''
+  context.commandMessage = filterMsg
+  context.commandText = filterMsg?.data?.messageChain?.find(i => i.type === 'Plain')?.text ?? ''
 }
 
 // 下注
 EventFlow.bet = async (context) => {
   const lateRegexp = /迟到/gi
   const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到/gi
-  const { message, targetQQ, filterText } = context
-  const [words, value] = isBetCommand(filterText)
+  const { message, targetQQ, commandText } = context
+  const [words, value] = isBetCommand(commandText)
   if(words && value) {
     // 匹配关键词
     const type = words.search((notLateRegexp)) >= 0 ? betType.不迟到 :
@@ -155,21 +154,12 @@ EventFlow.bet = async (context) => {
     if(type === undefined) return
 
     // 存储下注积分
-    const [err] = await addOnlyOneDocument<PointIterface>({
-      qq: targetQQ,
-      betTime: {
-        $gt: dayjs().startOf('date').toDate()
-      }
-    }, {
-      qq: targetQQ,
-      betPoint: Number(value),
-      betType: type,
-    }, Point)
+    const { success, message } = await BetModel.bet(type, targetQQ, Number(value))
 
-    if(err) {
+    if(message) {
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .at(targetQQ)
-        .plain('\n' + getOneErrorMessage(err))
+        .plain('\n' + message)
         .face(undefined, '请/gun')
         .exec()
       return
@@ -186,8 +176,8 @@ EventFlow.bet = async (context) => {
 
 // 签到
 EventFlow.signIn = async (context) => {
-  const { message, targetQQ, filterText } = context
-  if(isSignInCommand(filterText)) {
+  const { message, targetQQ, commandText } = context
+  if(isSignInCommand(commandText)) {
     // 随机发积分
     const userPoint = randomPoint()
     const find = await UserPointsModel.findByQQ(targetQQ)

@@ -2,10 +2,12 @@ const path = require('path')
 module.exports = {
   apps : [{
     name: 'are-you-late',
-    script: path.join(__dirname, 'src', 'index.ts'),
-    interpreter: './node_modules/.bin/ts-node',
-    interpreter_args: '-r tsconfig-paths/register src/index.ts',
+    script: path.join(__dirname, 'dist', 'are-you-late.min.js'),
+    // script: path.join(__dirname, 'src', 'index.ts'),
+    // interpreter: './node_modules/.bin/ts-node',
+    // interpreter_args: '-r tsconfig-paths/register src/index.ts',
     watch: false,
+    // 运行的时候注入
     env: {},
     env_production: {
       NODE_ENV: 'production'

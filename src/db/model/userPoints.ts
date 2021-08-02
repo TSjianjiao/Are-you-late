@@ -1,9 +1,10 @@
 
-import TransactionResponse from '@/types/error';
-import logger from '@/utils/logger';
-import dayjs from 'dayjs';
-import { Document, Model, Query, Schema, connect, model, models } from 'mongoose';
-import tryCatchPromise from '@/utils/decorators/tryCatchPromise';
+import TransactionResponse from '@/types/error'
+import logger from '@/utils/logger'
+import dayjs from 'dayjs'
+import { Document, Model, Query, Schema, connect, model, models } from 'mongoose'
+import tryCatchPromise from '@/utils/decorators/tryCatchPromise'
+import { thorwCustomError } from '@/utils/error'
 export interface UserPoints {
   /** 用户qq */
   qq: string
@@ -22,6 +23,7 @@ interface DocMethod {
    * 减分
    * */
   subPoint(points:number): Promise<TransactionResponse>
+
 }
 // 定义model静态方法
 interface StaticMethod {
@@ -44,10 +46,10 @@ const UserPointSchema = new Schema<UserPoints, IUserPointsModel>({
     validate: {
       validator: function(v:number) {
         if(v < 0) {
-          throw new Error('不能再减少')
+          thorwCustomError('不能再减少')
         }
         if(!Number.isInteger(v)) {
-          throw new Error('只能为整数')
+          thorwCustomError('只能为整数')
         }
         return true
       },
@@ -60,15 +62,15 @@ const UserPointSchema = new Schema<UserPoints, IUserPointsModel>({
     validate: {
       validator: function(v:number) {
         if(v < 0) {
-          throw new Error('不能再减少')
+          thorwCustomError('不能再减少')
         }
         if(!Number.isInteger(v)) {
-          throw new Error('只能为整数')
+          thorwCustomError('只能为整数')
         }
         return true
       },
     },
-      default: () => 0
+    default: () => 0
   }
 })
 

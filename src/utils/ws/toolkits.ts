@@ -8,11 +8,11 @@ import { Recall, SendFriendMessage, SendGroupMessage, SendNudge, SendTempMessage
 class ToolKit {
 	constructor(){}
 
-	send(type: 'sendGroupMessage', target: number): SendMessage
-	send(type: 'sendFriendMessage', target: number): SendMessage
-	send(type: 'sendTempMessage', qq: number, group: number): SendMessage
-	send(type: 'sendNudge', target: number, subject: number, kind: 'Friend' | 'Group' | 'Stranger'): void
-	send(type: 'recall', target: number): void
+	send(type: 'sendGroupMessage', target: string): SendMessage
+	send(type: 'sendFriendMessage', target: string): SendMessage
+	send(type: 'sendTempMessage', qq: string, group: string): SendMessage
+	send(type: 'sendNudge', target: string, subject: string, kind: 'Friend' | 'Group' | 'Stranger'): void
+	send(type: 'recall', target: string): void
 	/** 发送消息 */
 	send(type:string, ..._rest: any[]) {
 		let msg = {

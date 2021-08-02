@@ -1,23 +1,30 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin')
 
+const webpack = require('webpack');
+let externals = _externals();
 
 /** @type {import('webpack').Configuration} */
 module.exports = {
-  mode: 'none',
   entry: {
-    'are-you-late': './src/index',
-    'are-you-late.min': './src/index',
+    'are-you-late': path.join(__dirname, "src", "index.ts"),
+    'are-you-late.min': path.join(__dirname, "src", "index.ts"),
   },
+  mode: 'production',
+  target: 'node',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
-    libraryTarget: 'commonjs',
-    // 全局名字
-    library: 'Late',
-    // globalObject: "this",
     clean: true
   },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+    alias: {
+      "@": path.join(__dirname, "src")
+    },
+  },
+  // 重要
+  externals: externals,
   module: {
     rules: [
       {
@@ -36,22 +43,23 @@ module.exports = {
       }
     ]
   },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-    alias: {
-      "@": path.join(__dirname, "src")
-    },
-    fallback: {
-      "path": require.resolve("path-browserify")
-    }
-  },
   plugins: [],
-  optimization: {
+    optimization: {
     minimize: true,
     minimizer: [
         new TerserPlugin({
             include: /\.min\.js$/
         })
     ]
-}
+  }
+};
+
+function _externals() {
+  let manifest = require('./package.json');
+  let dependencies = manifest.dependencies;
+  let externals = {};
+  for (let p in dependencies) {
+    externals[p] = 'commonjs ' + p;
+  }
+  return externals;
 }

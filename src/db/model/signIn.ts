@@ -1,8 +1,9 @@
 
-import TransactionResponse from '@/types/error';
-import tryCatchPromise from '@/utils/decorators/tryCatchPromise';
-import dayjs from 'dayjs';
-import { Document, Model, Query, Schema, connect, model, models } from 'mongoose';
+import TransactionResponse from '@/types/error'
+import tryCatchPromise from '@/utils/decorators/tryCatchPromise'
+import { thorwCustomError } from '@/utils/error'
+import dayjs from 'dayjs'
+import { Document, Model, Query, Schema, connect, model, models } from 'mongoose'
 
 export interface SignIn {
   /** 用户qq */
@@ -44,7 +45,7 @@ class LoadClass {
         qq
       })
     }else {
-      throw new Error('今天已签到')
+      thorwCustomError('今天已签到')
     }
   }
 }

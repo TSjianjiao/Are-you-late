@@ -10,7 +10,9 @@ export function isBetCommand(text: string): [words, value] {
     const comand = blockComand[1].split(' ')
     if(comand.length === 2) {
       const [words, value] = comand
-      return [words, value]
+      if(!isNaN(Number(value))) {
+        return [words, value]
+      }
     }
   }
   return ['', '']
