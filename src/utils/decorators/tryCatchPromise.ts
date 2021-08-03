@@ -5,7 +5,7 @@ import logger from '../logger'
 /**
  * 包装try catch的装饰器
  * 没有返回数据的操作才能用tryCatchPromise
- * @param errorMessage 错误消息
+ * @param errorMessage 错误消息 (不填写需要自己抛出错误)
  */
 export default function (errorMessage?: string) {
   return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
@@ -21,7 +21,7 @@ export default function (errorMessage?: string) {
           logger('db', 'error', err)
         }
         return {
-          message: errorMessage || err.MessageData
+          message: errorMessage || err.message
         }
       }
     }

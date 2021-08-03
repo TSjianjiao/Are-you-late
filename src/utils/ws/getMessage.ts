@@ -26,7 +26,7 @@ export default class GetMessage<MessageType extends GetMsg> {
    * @param type 消息链类型
    * @param message （不要传递值）返回的是上一步过滤的消息
    */
-  @filter<MessageType>()
+  @filter()
   filterByMessageChainType(type: keyof typeof MessageType, message?: MessageType)  {
   	if(message) {
   		if(message.data.type === type) {
@@ -43,7 +43,7 @@ export default class GetMessage<MessageType extends GetMsg> {
   /**
    * 消息类型筛选
    */
-  @filter<MessageType>()
+  @filter()
   filterByMessageType(type: keyof typeof messageType, message?: MessageType) {
   	if(message) {
   		if(message.data.messageChain) {
@@ -62,10 +62,10 @@ export default class GetMessage<MessageType extends GetMsg> {
   /**`
    * 消息发送者qq号筛选
    */
-  @filter<MessageType>()
-  filterBySender(qq: number, message?: MessageType) {
+  @filter()
+  filterBySender(qq: string, message?: MessageType) {
   	if(message) {
-  		if(message.data.sender.id === qq) {
+  		if(String(message?.data?.sender?.id) === qq) {
   			this.filteredMsg = message
   		}else {
   			this.filteredMsg = undefined
@@ -76,21 +76,19 @@ export default class GetMessage<MessageType extends GetMsg> {
 
   /**
    * 消息接收者qq号筛选
-   * @param qq 默认是bot的qq
    */
-  @filter<MessageType>()
-  filterByTaget(qq: string = SystemConfig.bot_qq, message?: MessageType) {
-  	if(message) {
-  		if(message.data.messageChain) {
-  			if(message.data.messageChain.some(i => i.target === qq)) {
-  				this.filteredMsg = message
-  			}else {
-  				this.filteredMsg = undefined
-  			}
-  		}else {
-  			this.filteredMsg = undefined
-  		}
-  	}
+  @filter()
+  filterByTaget(qq: string, message?: MessageType) {
+    // 不能直接在参数上设置默认值 因为装饰器里面获取不到参数
+    if (message) {
+      if(message.data.messageChain) {
+        if(message.data.messageChain.some(i => String(i.target) === qq)) {
+          this.filteredMsg = message
+          return
+        }
+      }
+    }
+    this.filteredMsg = undefined
   	return this
   }
 
@@ -98,7 +96,7 @@ export default class GetMessage<MessageType extends GetMsg> {
    * 消息内容筛选
    * @param filterFn 筛选函数必须返回一个布尔值
    */
-  @filter<MessageType>()
+  @filter()
   filterByPlainText(filterFn: (text: string) => boolean, message?: MessageType) {
   	if(message) {
   		if(message.data.messageChain) {

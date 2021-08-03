@@ -88,7 +88,7 @@ class WS {
     if(WS.reconnection) return
     logger('ws', 'info', `正在重连${++WS.reConnectCount}次`)
     if(WS.reConnectCount >= 10) {
-      logger('ws', 'error', `重连超时`)
+      logger('ws', 'error', '重连超时')
       return
     }
     WS.reconnection = true

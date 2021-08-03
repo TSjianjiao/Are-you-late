@@ -32,7 +32,7 @@ const SignInSchema = new Schema<SignIn, ISignInModel>({
 })
 
 class LoadClass {
-  @tryCatchPromise('签到失败！')
+  @tryCatchPromise()
   static async signIn(this: SignIn & Model<SignIn>, qq: string) {
     const find = await this.findOne({
       qq,

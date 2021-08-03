@@ -1,4 +1,5 @@
 
+import BaseConfig from '@/config/base.config'
 import TransactionResponse from '@/types/error'
 import tryCatchPromise from '@/utils/decorators/tryCatchPromise'
 import { thorwCustomError } from '@/utils/error'
@@ -79,20 +80,35 @@ const BetSchema = new Schema<Bet>({
 class LoadClass {
   @tryCatchPromise()
   static async bet(this: Bet & Model<Bet> & StaticMethod, betType:betType, qq:string, point:number) {
-    const betRecord = await this.findByQQ(qq)
+    if(dayjs().isAfter(BaseConfig.封盘时间())) {
+      thorwCustomError(`每天 ${BaseConfig.封盘时间().format('HH:mm:ss')} 前可投注！`)
+    }
+
+    const betRecord = await this.findOneAndUpdate({
+      qq,
+      betTime: {
+        $gt: dayjs().startOf('date').toDate()
+      }
+    }, {
+      qq
+    }).exec()
+
     const userPoint = await UserPointsModel.findByQQ(qq)
-    if( betRecord.betType !== betType) {
-      thorwCustomError(`你已投注摆子哥 ${betTypeText[betType]}!`)
+
+    if( betRecord && betRecord.betType !== betType) {
+      thorwCustomError(`你已投注摆子哥 ${betTypeText[betRecord.betType]}!`)
     }
     if(userPoint.remainPoints >= point) {
-      await this.findOneAndUpdate({
-        qq,
-        betTime: {
-          $gt: dayjs().startOf('date').valueOf()
-        }
-      }, {
+      await betRecord.updateOne({
         $inc: {
           betPoint: point
+        },
+        betTime: dayjs().toDate()
+      }).exec()
+
+      await userPoint.updateOne({
+        $inc: {
+          remainPoints: -point
         }
       }).exec()
     }else {
