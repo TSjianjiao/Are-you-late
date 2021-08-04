@@ -34,7 +34,7 @@ interface StaticMethod {
   /**
    * 根据qq查询document
    * */
- findByQQ(qq: string): Promise<Bet & Document<any, any, Bet> & DocMethod>
+ findByQQ(qq: string, otherFilter?: any): Promise<Bet & Document<any, any, Bet> & DocMethod>
 
   /**
    * 下注
@@ -72,8 +72,7 @@ const BetSchema = new Schema<Bet>({
   },
   betType: {
     type: Schema.Types.Number,
-    require: false,
-    default: () => betType.迟到
+    require: false
   }
 })
 
@@ -84,26 +83,27 @@ class LoadClass {
       thorwCustomError(`每天 ${BaseConfig.封盘时间().format('HH:mm:ss')} 前可投注！`)
     }
 
-    const betRecord = await this.findOneAndUpdate({
-      qq,
-      betTime: {
-        $gt: dayjs().startOf('date').toDate()
-      }
-    }, {
-      qq
-    }).exec()
-
-    const userPoint = await UserPointsModel.findByQQ(qq)
-
-    if( betRecord && betRecord.betType !== betType) {
-      thorwCustomError(`你已投注摆子哥 ${betTypeText[betRecord.betType]}!`)
+    if(point <= 0 || !Number.isInteger(point)) {
+      thorwCustomError('只能为正整数')
     }
+    const betRecord = await this.findByQQ(qq, {
+      betTime : {
+        $gt: dayjs().startOf('date').toDate(),
+        $lt: BaseConfig.封盘时间().toDate()
+      }
+    })
+    const userPoint = await UserPointsModel.findByQQ(qq)
+    if( betRecord && betRecord?.betType !== undefined && betRecord.betType !== betType) {
+      thorwCustomError(`你已认定摆子哥 ${betTypeText[betRecord.betType]}了!改不了咯~`)
+    }
+
     if(userPoint.remainPoints >= point) {
       await betRecord.updateOne({
         $inc: {
           betPoint: point
         },
-        betTime: dayjs().toDate()
+        betTime: dayjs().toDate(),
+        betType: betType
       }).exec()
 
       await userPoint.updateOne({
@@ -117,12 +117,12 @@ class LoadClass {
   }
 
 
-  static async findByQQ(this: Bet & Model<Bet>, qq: string) {
-    const find = await this.findOne({qq}).exec()
+  static async findByQQ(this: Bet & Model<Bet>, qq: string, otherFilter?: any) {
+    const find = await this.findOne({qq, ...otherFilter}).exec()
     if(find) {
       return find
     }else {
-      await this.create({
+      return await this.create({
         qq
       })
     }

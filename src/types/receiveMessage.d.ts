@@ -13,7 +13,7 @@ export interface ReceiveMessage<D> {
 
 export interface MessageData<T> {
   type: T['type'],
-  messageChain: [
+  messageChain?: [
     Source,
     ...Array<any>
   ],

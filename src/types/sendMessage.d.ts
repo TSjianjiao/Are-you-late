@@ -51,7 +51,7 @@ export interface SendNudge {
   target:string,
   /** 戳一戳接受主体(上下文), 戳一戳信息会发送至该主体, 为群号/好友QQ号 */
   subject:number,
-  kind:"Friend" | "Group" | "Stranger"
+  kind:'Friend' | 'Group' | 'Stranger'
 }
 
 /**

@@ -10,7 +10,8 @@ function getTodayWorkTime() {
  * 当天封盘时间
  */
 function getBetClosingTime() {
-  return getTodayWorkTime().subtract(20,'minute')
+  // return getTodayWorkTime().subtract(10,'minute')
+  return dayjs().endOf('date')
 }
 
 const BaseConfig = {

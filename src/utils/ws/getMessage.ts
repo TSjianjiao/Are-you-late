@@ -63,13 +63,21 @@ export default class GetMessage<MessageType extends GetMsg> {
    * 消息发送者qq号筛选
    */
   @filter()
-  filterBySender(qq: string, message?: MessageType) {
+  filterBySender(qq: string | string[], message?: MessageType) {
   	if(message) {
-  		if(String(message?.data?.sender?.id) === qq) {
-  			this.filteredMsg = message
-  		}else {
-  			this.filteredMsg = undefined
-  		}
+      if(Array.isArray(qq)) {
+        if(qq.some(q => q === String(message?.data?.sender?.id))) {
+          this.filteredMsg = message
+        }else {
+          this.filteredMsg = undefined
+        }
+      }else {
+        if(String(message?.data?.sender?.id) === qq) {
+          this.filteredMsg = message
+        }else {
+          this.filteredMsg = undefined
+        }
+      }
   	}
   	return this
   }

@@ -6,6 +6,7 @@ export interface SystemConfigInterface {
   bot_qq: string
   group_qq: string
   admin_qq: string
+  yuliu_qq: string
 }
 
 const SystemConfig:SystemConfigInterface  = {
@@ -20,7 +21,9 @@ const SystemConfig:SystemConfigInterface  = {
   /** qq群号 */
   group_qq: '599869861',
   /** 管理员qq */
-  admin_qq: '929175050'
+  admin_qq: '929175050',
+  /** 摆子哥qq */
+  yuliu_qq: '1916300010'
 }
 
 export default SystemConfig

@@ -1,9 +1,46 @@
+type words = string
+type value = string
+
+export const commandList = {
+  '投注': '#[迟到 | 没迟到] [投注点数]',
+  '查询积分': '#查询积分',
+  '签到': '#签到',
+  '查询投注': '#查询投注',
+  '结算': '#结算 [迟到 | 没迟到]',
+}
+/**
+ * 一句话命令
+ */
+export function isCommand(text: string, match: string | RegExp): Boolean {
+  if(!text) return
+  const blockComand = text.split('#')
+  if(match instanceof RegExp) {
+    return match.test(blockComand[1])
+  }else {
+    return blockComand[1] === match
+  }
+}
+
+/**
+ * 带一个参数的命令
+ */
+export function getParamCommand(text: string): [words, value] {
+  if(!text) return ['', '']
+  const blockComand = text.split('#')
+  if(blockComand.length === 2) {
+    const comand = blockComand[1].split(' ')
+    if(comand.length === 2) {
+      const [words, value] = comand
+      return [words, value]
+    }
+  }
+  return ['', '']
+}
 
 /**
  * 投注命令
  */
-type words = string
-type value = string
+
 export function isBetCommand(text: string): [words, value] {
   if(!text) return ['', '']
   const blockComand = text.split('#')
@@ -18,6 +55,8 @@ export function isBetCommand(text: string): [words, value] {
   }
   return ['', '']
 }
+
+
 
 /**
  * 签到命令

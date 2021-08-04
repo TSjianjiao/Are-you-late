@@ -12,7 +12,7 @@ interface Context {
 	targetQQ: string
 
   /** 指令消息链 */
-  commandMessage?: ReceiveMessage<any>
+  commandMessage?: ReceiveMessage<MessageData<any>>
    /** 指令 */
   commandText?: string
 	[key:string]: any
@@ -69,8 +69,8 @@ class WS {
       // 上下文对象
       const context:Context = {
         message: jsonMsg as any,
-        targetQQ: (jsonMsg as any).data.sender.id,
-        text: (jsonMsg as any).data.messageChain?.find(i => i.type === 'Plain')?.text
+        targetQQ: (jsonMsg as any)?.data?.sender?.id,
+        text: (jsonMsg as any)?.data?.messageChain?.find(i => i.type === 'Plain')?.text
       }
       // 顺序执行流程
       for(let flow of Object.keys(EventFlow)) {
