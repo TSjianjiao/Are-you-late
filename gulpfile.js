@@ -24,7 +24,7 @@ const watchTS = () => {
 function compile() {
   const compiled = gulp.src('./src/**/*.ts')
     .pipe(alias(tsProject.config))
-    .pipe(tsProject());
+    .pipe(tsProject())
 
   return compiled.js
     .pipe(gulp.dest('build/'))
