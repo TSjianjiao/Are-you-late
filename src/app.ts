@@ -6,7 +6,7 @@ import { commandList, getParamCommand, isBetCommand, isCommand, isQueryBet, isQu
 import GameUser from '@/db/model/gameUser'
 import SignInModel from '@/db/model/signIn'
 import UserPointsModel from '@/db/model/userPoints'
-import bet, { betType, betTypeText, Bet} from '@/db/model/bet'
+import bet, { betType, betTypeText, Bet, betState, betStateText} from '@/db/model/bet'
 
 import { GroupMessage, ReceiveMessage, Plain } from '@/types/receiveMessage'
 import randomPoint from './utils/randomPoint'
@@ -14,25 +14,43 @@ import { EventFlow } from './utils/ws'
 import BetModel from '@/db/model/bet'
 import dayjs from 'dayjs'
 import BaseConfig from './config/base.config'
+import FlashImageModel from './db/model/flashImage'
 const lateRegexp = /迟到/gi
-const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到/gi
+const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到|迟不到/gi
+
+
+// 保存闪照
+EventFlow.saveFlashImage = async (context) => {
+  const { message } = context
+  const find = message?.data?.messageChain?.find(mc => mc.type === 'FlashImage')
+  if(find?.url) {
+    const sender = message.data.sender.id
+    FlashImageModel.create({
+      qq: sender,
+      url: find.url
+    })
+  }
+}
+
 // 添加用户
 EventFlow.addUser = async (context) => {
   const { message } = context
-  const {
-    data: {
-      sender: {
-        id,
-        memberName,
-        specialTitle
+  if(message?.data?.sender?.id) {
+    const {
+      data: {
+        sender: {
+          id,
+          memberName,
+          specialTitle
+        }
       }
-    }
-  } = message
-  await GameUser.findOneAndUpdate({qq: id}, {
-    qq: id,
-    memberName: memberName,
-    specialTitle: specialTitle,
-  }, {upsert: true}).exec()
+    } = message
+    await GameUser.findOneAndUpdate({qq: message.data.sender.id}, {
+      qq: message.data.sender.id,
+      memberName: memberName,
+      specialTitle: specialTitle,
+    }, {upsert: true}).exec()
+  }
 }
 
 // 筛选命令 #xxx 消息
@@ -50,6 +68,29 @@ EventFlow.filter = (context) => {
   // 把筛选后的消息带在上下文中
   context.commandMessage = filterMsg
   context.commandText = filterMsg?.data?.messageChain?.find(i => i.type === 'Plain')?.text ?? ''
+}
+
+// 查询闪照
+EventFlow.findFlashImage = async (context) => {
+  const { message, targetQQ, commandText } = context
+  const [word, value] = getParamCommand(commandText)
+  if(word === '查询闪照') {
+    try {
+      const limit = 5
+      if(!value) throw new Error('\n请输入正确QQ号')
+      const res = await FlashImageModel.find({qq: value}).sort({createTime: 'desc'}).limit(limit).exec()
+      if(res.length <= 0) throw new Error('\n没有数据')
+      let msg = ''
+      msg = res.reduce((pre, cur, curIndex) => {
+        return pre += `\n${dayjs(cur.createTime).format('YYYY-MM-DD')}：${cur.url}`
+      }, '')
+      throw new Error(`\n<${value}>的最近${limit}张闪照地址：` + msg )
+    }catch({message}) {
+      ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
+        .plain(message)
+        .exec()
+    }
+  }
 }
 
 // 下注
@@ -115,7 +156,7 @@ EventFlow.signIn = async (context) => {
       const  {success: addPointSuccess, message: addPointMessage} = await find.addPoint(userPoint)
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .at(targetQQ)
-        .plain(addPointSuccess ? `\n签到成功！\n获得积分${userPoint}!` : `\n签到失败：\n${addPointMessage}`)
+        .plain(addPointSuccess ? `\n签到成功！\n获得积分${userPoint}!\n${userPoint <= 5 ? 'maybe!' : ''}` : `\n签到失败：\n${addPointMessage}`)
         .exec()
     }else {
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
@@ -264,75 +305,183 @@ EventFlow.queryBet = async (context) => {
 
 // 结算
 EventFlow.accountBet = async (context) => {
-  const { message, targetQQ, commandText, commandMessage } = context
+  const { message, targetQQ, commandMessage } = context
   const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(commandMessage).filterBySender([SystemConfig.admin_qq, SystemConfig.yuliu_qq]).exec()
-  const [word, value] = getParamCommand(filterMsg?.data?.messageChain?.find(i => i.type === 'Plain')?.text)
-  //
-  if(word && value) {
-    if(word === '结算') {
-      const type = value.search((notLateRegexp)) >= 0 ? betType.不迟到 :
-        value.search((lateRegexp)) >= 0 ? betType.迟到 : undefined
-      const find = await BetModel.find({
-        betTime : {
-          $gt: dayjs().startOf('date').toDate(),
-          $lt: BaseConfig.封盘时间().toDate()
-        },
-      }).exec()
+  const [word, value] = getParamCommand(filterMsg?.data?.messageChain?.find(i => i.type === 'Plain')?.text ?? '')
+  if(word === '结算') {
 
-      let totalPoints:number = 0,
-        lateTotal:number = 0,
-        notLateTotal:number = 0
-      find.forEach(data => {
-        totalPoints += data.betPoint
-        if(data.betType === betType.迟到) {
-          lateTotal += data.betPoint
-        }else {
-          notLateTotal += data.betPoint
+    // 结算命令type
+    let type = value.search((notLateRegexp)) >= 0 ? betType.不迟到 :
+      value.search((lateRegexp)) >= 0 ? betType.迟到 : undefined
+
+    // 查询今日所有投注
+    const todayAllBet = await BetModel.aggregate([
+      {
+        $match: {
+          betTime : {
+            $gt: dayjs().startOf('date').toDate(),
+            $lt: BaseConfig.封盘时间().toDate()
+          }
         }
-      })
-
-      // 计算个人获得
-      const caclPoint = (betPoint: number, dataBetType: betType) => {
-        if(dataBetType === betType.不迟到) {
-          return type === dataBetType ? Math.floor((betPoint / notLateTotal) * totalPoints) : 0
-        }else {
-          return type === dataBetType ? Math.floor((betPoint / lateTotal) * totalPoints) : 0
-        }
-      }
-
-      let sendStr = '\n请输入"迟到"或者"没有迟到"'
-      if(type !== undefined) {
-        const t = new Table
-        const willUpdate:any = []
-        find.forEach(function(data) {
-          const point = caclPoint(data.betPoint, data.betType)
-          willUpdate.push({
-            qq: data.qq,
-            point
-          })
-          t.cell('QQ号', data.qq)
-          t.cell('投注类型', betTypeText[data.betType])
-          t.cell('投注积分', data.betPoint)
-          t.cell('预计得分', point)
-          t.newRow()
-        })
-        willUpdate.forEach((i) => {
-          UserPointsModel.updateOne({
-            qq: i.qq
-          }, {
-            $inc: {
-              remainPoints: i.point
+      },
+      {
+        $lookup: {
+          from: 'gameusers',
+          let: { qq: '$qq' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  // $$是外表的 $是内表的
+                  $eq: ['$$qq', '$qq']
+                }
+              }
+            },
+            {
+              $project: {
+                _id: 0,
+                memberName: 1,
+                specialTitle: 1,
+              }
+            },
+            {
+              $lookup: {
+                from: 'userpoints',
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        // $$是外表的 $是内表的
+                        $eq: ['$$qq', '$qq']
+                      }
+                    }
+                  },
+                ],
+                as: 'userpoints'
+              }
+            },
+            {
+              $unwind: {
+                path: '$userpoints'
+              }
+            },
+            {
+              $replaceRoot: { newRoot: { $mergeObjects: [ '$userpoints', '$$ROOT' ] } }
+            },
+            {
+              $project: {
+                _id: 0,
+                memberName: 1,
+                remainPoints: 1,
+                specialTitle: 1,
+                totalPoints: 1
+              }
             }
-          }).exec()
-        })
-        sendStr = t.toString()
-      }
+          ],
+          as: 'gameusers'
+        }
+      },
+      {
+        $unwind: {
+          path: '$gameusers'
+        }
+      },
+    ]).exec()
 
+    if(todayAllBet.length <= 0) {
+      // 没人投注
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .at(targetQQ)
-        .plain('\n' + `已结算<${betTypeText[type]}>` + '\n' + sendStr)
+        .plain('今天还没有人下注')
         .exec()
+      return
     }
+
+    // 是否已结算
+    const isAreadyAccount = todayAllBet[0].betState !== betState.未结束
+    type = isAreadyAccount ? todayAllBet[0].betState : type
+
+    let totalPoints:number = 0
+    let lateTotal:number = 0
+    let notLateTotal:number = 0
+    todayAllBet.forEach(data => {
+      totalPoints += data.betPoint
+      if(data.betType === betType.迟到) {
+        lateTotal += data.betPoint
+      }else {
+        notLateTotal += data.betPoint
+      }
+    })
+
+    // 计算个人获得
+    const caclPoint = (data: any) => {
+      const {
+        betPoint,
+        betType: dataBetType,
+        betProfit
+      } = data
+      if(isAreadyAccount) {
+        return betProfit
+      }else {
+        if(dataBetType === betType.不迟到) {
+          return (type === dataBetType || type === undefined) ? Math.floor((betPoint / notLateTotal) * totalPoints) : 0
+        }else {
+          return (type === dataBetType || type === undefined) ? Math.floor((betPoint / lateTotal) * totalPoints) : 0
+        }
+      }
+    }
+
+    let sendStr = '\n请输入"迟到"或者"没有迟到"'
+
+    const willUpdate:Bet[] = []
+
+    if(todayAllBet.length > 0) {
+      // 计算得分
+      const t = new Table
+      todayAllBet.forEach(function(data) {
+        // 计算盈利
+        const profit = caclPoint(data)
+
+        willUpdate.push({
+          ...data,
+          betProfit: profit,
+        })
+
+        t.cell('昵称', data.gameusers.memberName)
+        t.cell('投注类型', betTypeText[data.betType])
+        t.cell('投注积分', data.betPoint)
+        t.cell('剩余积分', data.gameusers.remainPoints)
+        t.cell(isAreadyAccount ? '获得积分' : '预计得分', profit)
+        t.newRow()
+      })
+
+      sendStr = t.toString()
+    }
+    if(type !== undefined && !isAreadyAccount) {
+      willUpdate.forEach((i) => {
+        UserPointsModel.updateOne({
+          qq: i.qq
+        }, {
+          $inc: {
+            remainPoints: i.betProfit
+          }
+        }).exec()
+
+        BetModel.updateOne({
+          qq: i.qq
+        }, {
+          $set: {
+            betState: i.betType,
+            betProfit: i.betProfit
+          }
+        }).exec()
+      })
+    }
+    console.log(sendStr)
+    ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
+      .at(targetQQ)
+      .plain('\n' + `${ (isAreadyAccount || type !== undefined) ? `已结算<${ betTypeText[type] || betStateText[todayAllBet[0].betState]}>` : '未结算' }` + '\n' + sendStr + '\n')
+      .exec()
   }
 }
 

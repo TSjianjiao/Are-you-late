@@ -2,7 +2,6 @@
   "name": "are-you-late",
   "version": "1.0.0",
   "description": "摆子哥今天迟到了吗？",
-  "main": "lib/index.js",
   "scripts": {
     "dev": "npx ts-node-dev --inspect -r tsconfig-paths/register src/index.ts",
     "build": "npx webpack",
@@ -14,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@reduxjs/toolkit": "^1.6.1",
+    "ansi-regex": "^6.0.0",
     "dayjs": "^1.10.6",
     "easy-table": "^1.1.1",
     "log4js": "^6.3.0",
@@ -21,6 +21,7 @@
     "mongoose": "^5.13.3",
     "redux": "^4.1.0",
     "reflect-metadata": "^0.1.13",
+    "wcwidth": "^1.0.1",
     "ws": "^7.5.3"
   },
   "devDependencies": {
@@ -30,6 +31,7 @@
     "@gulp-plugin/alias": "^2.2.2",
     "@types/jest": "^26.0.23",
     "@types/node": "^16.4.0",
+    "@types/wcwidth": "^1.0.0",
     "@types/ws": "^7.4.7",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",

@@ -15,6 +15,16 @@ export const betTypeText = {
   [betType.迟到]: '迟到',
   [betType.不迟到]: '不迟到',
 }
+export enum betState {
+  迟到,
+  不迟到,
+  未结束,
+}
+export const betStateText = {
+  [betState.迟到]: '迟到',
+  [betState.不迟到]: '不迟到',
+  [betState.未结束]: '未结束',
+}
 
 export interface Bet {
   /** 用户qq */
@@ -25,6 +35,10 @@ export interface Bet {
   betTime?: Date
   /** 押注方向 */
   betType?: betType
+  /** 押注状态 是否已结算 */
+  betState?: betState | betType
+  /** 盈利 */
+  betProfit?: number
 }
 
 interface DocMethod {
@@ -73,6 +87,16 @@ const BetSchema = new Schema<Bet>({
   betType: {
     type: Schema.Types.Number,
     require: false
+  },
+  betState: {
+    type: Schema.Types.Number,
+    require: false,
+    default: () => betState.未结束
+  },
+  betProfit: {
+    type: Schema.Types.Number,
+    require: false,
+    default: () => 0
   }
 })
 
@@ -86,6 +110,7 @@ class LoadClass {
     if(point <= 0 || !Number.isInteger(point)) {
       thorwCustomError('只能为正整数')
     }
+
     const betRecord = await this.findByQQ(qq, {
       betTime : {
         $gt: dayjs().startOf('date').toDate(),
@@ -123,7 +148,8 @@ class LoadClass {
       return find
     }else {
       return await this.create({
-        qq
+        qq,
+        betState: betState.未结束
       })
     }
   }

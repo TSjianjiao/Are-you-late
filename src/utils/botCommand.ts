@@ -32,6 +32,8 @@ export function getParamCommand(text: string): [words, value] {
     if(comand.length === 2) {
       const [words, value] = comand
       return [words, value]
+    }else {
+      return [comand[0], '']
     }
   }
   return ['', '']
