@@ -15,7 +15,6 @@
     "@reduxjs/toolkit": "^1.6.1",
     "ansi-regex": "^6.0.0",
     "dayjs": "^1.10.6",
-    "easy-table": "^1.1.1",
     "log4js": "^6.3.0",
     "mongodb": "^4.0.1",
     "mongoose": "^5.13.3",

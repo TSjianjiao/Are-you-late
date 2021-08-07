@@ -1,5 +1,6 @@
 import SystemConfig from './config/system.config'
-import Table from 'easy-table'
+import TextTable from '@/utils/textTable'
+
 import ToolKit from '@/utils/ws/toolkits'
 import { commandList, getParamCommand, isBetCommand, isCommand, isQueryBet, isQueryPoints, isSignInCommand } from '@/utils/botCommand'
 
@@ -437,7 +438,9 @@ EventFlow.accountBet = async (context) => {
 
     if(todayAllBet.length > 0) {
       // 计算得分
-      const t = new Table
+      // const t = new Table
+      const t = new TextTable
+
       todayAllBet.forEach(function(data) {
         // 计算盈利
         const profit = caclPoint(data)
@@ -446,16 +449,15 @@ EventFlow.accountBet = async (context) => {
           ...data,
           betProfit: profit,
         })
-
         t.cell('昵称', data.gameusers.memberName)
         t.cell('投注类型', betTypeText[data.betType])
         t.cell('投注积分', data.betPoint)
         t.cell('剩余积分', data.gameusers.remainPoints)
         t.cell(isAreadyAccount ? '获得积分' : '预计得分', profit)
-        t.newRow()
+        
       })
 
-      sendStr = t.toString()
+      sendStr = t.output()
     }
     if(type !== undefined && !isAreadyAccount) {
       willUpdate.forEach((i) => {
