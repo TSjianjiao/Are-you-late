@@ -454,7 +454,7 @@ EventFlow.accountBet = async (context) => {
         t.cell('投注积分', data.betPoint)
         t.cell('剩余积分', data.gameusers.remainPoints)
         t.cell(isAreadyAccount ? '获得积分' : '预计得分', profit)
-        
+
       })
 
       sendStr = t.output()
@@ -479,13 +479,90 @@ EventFlow.accountBet = async (context) => {
         }).exec()
       })
     }
-    console.log(sendStr)
     ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
       .at(targetQQ)
       .plain('\n' + `${ (isAreadyAccount || type !== undefined) ? `已结算<${ betTypeText[type] || betStateText[todayAllBet[0].betState]}>` : '未结算' }` + '\n' + sendStr + '\n')
       .exec()
   }
 }
+
+// 积分排行榜
+EventFlow.pointsRank = async (context) => {
+  const { message, targetQQ, commandText } = context
+  if(isCommand(commandText, /积分排行/ig)) {
+    interface Res {
+      qq: string,
+      totalPoints: number,
+      remainPoints: number,
+      gameusers: { memberName: string, specialTitle: string }
+    }
+    const res:Res[] = await UserPointsModel.aggregate([
+      {
+        $sort: {
+          remainPoints: -1
+        }
+      },
+      {
+        $lookup: {
+          from: 'gameusers',
+          let: { qq: '$qq' },
+          as: 'gameusers',
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  // $$是外表的 $是内表的
+                  $eq: ['$$qq', '$qq']
+                }
+              }
+            },
+            {
+              $project: {
+                _id: 0,
+                memberName: 1,
+                specialTitle: 1,
+              }
+            },
+          ]
+        }
+      },
+      {
+        $unwind: {
+          path: '$gameusers'
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          qq: 1,
+          totalPoints: 1,
+          remainPoints: 1,
+          gameusers: 1
+        }
+      },
+    ]).exec()
+
+    const t = new TextTable
+    const len = res.length
+    const size = 5
+    let index = 0
+    let rank = 1
+    while(index < len) {
+      res.slice(index, (index += size)).forEach((r, index) => {
+        t.cell('排名', rank++)
+        t.cell('昵称', r.gameusers.memberName)
+        t.cell('剩余积分', r.remainPoints)
+        t.cell('总获得积分', r.totalPoints)
+      })
+      let sendStr = t.output()
+      ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
+        .plain('\n' + sendStr + '\n')
+        .exec()
+    }
+
+  }
+}
+
 
 // 帮助
 EventFlow.help = async (context) => {

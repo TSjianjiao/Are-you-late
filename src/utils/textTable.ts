@@ -18,12 +18,12 @@ interface DetectedResult {
 
 class TextTable {
   // 保存单元格
-  private cells: Cell[] = []
-  private columns: Column[] = []
-  private fullWidthSpace = '　'
-  private halfWidthSpace = ' '
-  private maxRows:number = 0
-  constructor() {}
+  constructor(
+    private cells:Cell[] = [],
+    private fullWidthSpace:string = '　',
+    private columns: Column[] = [],
+    private maxRows:number = 0
+  ) {}
 
   // 侦测值
   private detectValue(str: string): DetectedResult {
@@ -37,8 +37,8 @@ class TextTable {
 
   // 计算每列最长长度
   private calculateColMaxWidth() {
-    let colMaxWidth = 0
     this.columns.forEach((col) => {
+      let colMaxWidth = 0
       const colNameWidth = col.colName.length
       this.maxRows = col.colValues.length > this.maxRows ? col.colValues.length : this.maxRows
       col.colValues.forEach(v => {
@@ -94,7 +94,16 @@ class TextTable {
   // 输出
   public output():string {
     this.calculateColMaxWidth()
-    return this.renderRow()
+    const res = this.renderRow()
+    this.reset()
+    return res
+  }
+
+  // 清空
+  public reset() {
+    this.cells = [],
+    this.columns = [],
+    this.maxRows = 0
   }
 }
 
