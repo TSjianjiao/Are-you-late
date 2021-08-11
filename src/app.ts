@@ -578,51 +578,51 @@ EventFlow.pointsRank = async (context) => {
 }
 
 // 抽奖
-EventFlow.luckDraw = async (context) => {
-  const { message, targetQQ, commandText } = context
-  if(isCommand(commandText, /抽奖/ig)) {
-    let str = ''
-    const find = await UserPointsModel.find({qq:targetQQ}).exec()
-    if(find && find.length > 0 && find[0].remainPoints >= 5) {
-      await UserPointsModel.updateOne({
-        qq: targetQQ
-      }, {
-        $inc: {
-          remainPoints: -5
-        }
-      }).exec()
+// EventFlow.luckDraw = async (context) => {
+//   const { message, targetQQ, commandText } = context
+//   if(isCommand(commandText, /抽奖/ig)) {
+//     let str = ''
+//     const find = await UserPointsModel.find({qq:targetQQ}).exec()
+//     if(find && find.length > 0 && find[0].remainPoints >= 5) {
+//       await UserPointsModel.updateOne({
+//         qq: targetQQ
+//       }, {
+//         $inc: {
+//           remainPoints: -5
+//         }
+//       }).exec()
 
-      let gainPoints = 0
-      let num = Math.ceil(Math.random() * 1000)
-      if(num>0&&num<500){
-        gainPoints = 0
-        str =  '谢谢惠顾'
-      }else if(num>=500&&num<800){
-        gainPoints = 10
-        str =  '中奖10积分'
-      }else if(num>=800&&num<950){
-        gainPoints = 100
-        str =  '中奖100积分!'
-      }else if(num>950){
-        gainPoints = 1000
-        str =  '中奖1000积分!!'
-      }
-      await UserPointsModel.updateOne({
-        qq: targetQQ
-      }, {
-        $inc: {
-          remainPoints: gainPoints
-        }
-      }).exec()
-    }else {
-      str = '你没有足够的积分！每次抽奖消耗<5>积分，请先获取积分，如签到'
-    }
-    ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
-      .at(targetQQ)
-      .plain('\n' + str + '\n')
-      .exec()
-  }
-}
+//       let gainPoints = 0
+//       let num = Math.ceil(Math.random() * 1000)
+//       if(num>0&&num<500){
+//         gainPoints = 0
+//         str =  '谢谢惠顾'
+//       }else if(num>=500&&num<800){
+//         gainPoints = 10
+//         str =  '中奖10积分'
+//       }else if(num>=800&&num<950){
+//         gainPoints = 100
+//         str =  '中奖100积分!'
+//       }else if(num>950){
+//         gainPoints = 1000
+//         str =  '中奖1000积分!!'
+//       }
+//       await UserPointsModel.updateOne({
+//         qq: targetQQ
+//       }, {
+//         $inc: {
+//           remainPoints: gainPoints
+//         }
+//       }).exec()
+//     }else {
+//       str = '你没有足够的积分！每次抽奖消耗<5>积分，请先获取积分，如签到'
+//     }
+//     ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
+//       .at(targetQQ)
+//       .plain('\n' + str + '\n')
+//       .exec()
+//   }
+// }
 
 // 帮助
 EventFlow.help = async (context) => {
