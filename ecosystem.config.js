@@ -22,7 +22,7 @@ module.exports = {
       repo : 'git@github.com:TSjianjiao/Are-you-late.git',
       path : '/usr/local/Code/are-you-late',
       'pre-deploy-local': 'echo \'本地脚本!\'',
-      'post-deploy' : 'echo \'开始部署\' && yarn && yarn build && pm2 startOrRestart ecosystem.config.js --env production',
+      'post-deploy' : 'echo \'开始部署\' && pm2 startOrRestart ecosystem.config.js --env production',
       // 'post-deploy' : "echo '开始部署' && yarn && yarn add --dev typescript @types/react && yarn build && pm2 startOrRestart ecosystem.config.js --env production",
       'post-setup': 'echo \'克隆完成，设置成功!\'',
       'pre-setup': 'echo \'开始设置!\''

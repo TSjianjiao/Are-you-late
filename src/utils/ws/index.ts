@@ -15,6 +15,9 @@ interface Context {
   commandMessage?: ReceiveMessage<MessageData<any>>
    /** 指令 */
   commandText?: string
+
+  /** 纯文本消息 */
+  text: string
 	[key:string]: any
 }
 interface EventFlow {
@@ -69,7 +72,7 @@ class WS {
       // 上下文对象
       const context:Context = {
         message: jsonMsg as any,
-        targetQQ: (jsonMsg as any)?.data?.sender?.id,
+        targetQQ: String((jsonMsg as any)?.data?.sender?.id),
         text: (jsonMsg as any)?.data?.messageChain?.find(i => i.type === 'Plain')?.text
       }
       // 顺序执行流程

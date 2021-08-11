@@ -14,11 +14,14 @@ import randomPoint from './utils/randomPoint'
 import { EventFlow } from './utils/ws'
 import BetModel from '@/db/model/bet'
 import dayjs from 'dayjs'
+import isBetween from 'dayjs/plugin/isBetween'
 import BaseConfig from './config/base.config'
 import FlashImageModel from './db/model/flashImage'
+import YuliuMsgModel from './db/model/yuliumsg'
+
 const lateRegexp = /迟到/gi
 const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到|迟不到/gi
-
+dayjs.extend(isBetween)
 
 // 保存闪照
 EventFlow.saveFlashImage = async (context) => {
@@ -51,6 +54,17 @@ EventFlow.addUser = async (context) => {
       memberName: memberName,
       specialTitle: specialTitle,
     }, {upsert: true}).exec()
+  }
+}
+
+// 记录摆子哥消息
+EventFlow.saveYuLiuMessage = async (context) => {
+  const { message, targetQQ, commandText, text } = context
+  // 8点到封盘的消息记录
+  if(dayjs().isBetween(dayjs().set('hours', 8).set('minutes', 0).set('seconds', 0), BaseConfig.封盘时间())) {
+    if(targetQQ === SystemConfig.yuliu_qq) {
+      YuliuMsgModel.saveMsg(text)
+    }
   }
 }
 
@@ -563,6 +577,52 @@ EventFlow.pointsRank = async (context) => {
   }
 }
 
+// 抽奖
+EventFlow.luckDraw = async (context) => {
+  const { message, targetQQ, commandText } = context
+  if(isCommand(commandText, /抽奖/ig)) {
+    let str = ''
+    const find = await UserPointsModel.find({qq:targetQQ}).exec()
+    if(find && find.length > 0 && find[0].remainPoints >= 5) {
+      await UserPointsModel.updateOne({
+        qq: targetQQ
+      }, {
+        $inc: {
+          remainPoints: -5
+        }
+      }).exec()
+
+      let gainPoints = 0
+      let num = Math.ceil(Math.random() * 1000)
+      if(num>0&&num<500){
+        gainPoints = 0
+        str =  '谢谢惠顾'
+      }else if(num>=500&&num<800){
+        gainPoints = 10
+        str =  '中奖10积分'
+      }else if(num>=800&&num<950){
+        gainPoints = 100
+        str =  '中奖100积分!'
+      }else if(num>950){
+        gainPoints = 1000
+        str =  '中奖1000积分!!'
+      }
+      await UserPointsModel.updateOne({
+        qq: targetQQ
+      }, {
+        $inc: {
+          remainPoints: gainPoints
+        }
+      }).exec()
+    }else {
+      str = '你没有足够的积分！每次抽奖消耗<5>积分，请先获取积分，如签到'
+    }
+    ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
+      .at(targetQQ)
+      .plain('\n' + str + '\n')
+      .exec()
+  }
+}
 
 // 帮助
 EventFlow.help = async (context) => {
