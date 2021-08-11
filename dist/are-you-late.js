@@ -1,30 +1,18 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
+
+/***/ 607:
+/***/ (function(module) {
+
+!function(e,i){ true?module.exports=i():0}(this,(function(){"use strict";return function(e,i,t){i.prototype.isBetween=function(e,i,s,f){var n=t(e),o=t(i),r="("===(f=f||"()")[0],u=")"===f[1];return(r?this.isAfter(n,s):!this.isBefore(n,s))&&(u?this.isBefore(o,s):!this.isAfter(o,s))||(r?this.isBefore(n,s):!this.isAfter(n,s))&&(u?this.isAfter(o,s):!this.isBefore(o,s))}}}));
+
+/***/ }),
 
 /***/ 903:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,162 +26,153 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const dayjs_1 = __importDefault(__webpack_require__(349));
 const system_config_1 = __importDefault(__webpack_require__(522));
+const textTable_1 = __importDefault(__webpack_require__(841));
 const toolkits_1 = __importDefault(__webpack_require__(391));
 const botCommand_1 = __webpack_require__(836);
 const gameUser_1 = __importDefault(__webpack_require__(94));
 const signIn_1 = __importDefault(__webpack_require__(68));
 const userPoints_1 = __importDefault(__webpack_require__(90));
-const point_1 = __importStar(__webpack_require__(831));
-const util_1 = __webpack_require__(854);
+const bet_1 = __webpack_require__(224);
 const randomPoint_1 = __importDefault(__webpack_require__(418));
 const ws_1 = __webpack_require__(461);
-// export default withMessage(async function (message) {
-// 	// 筛选消息
-// 	const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(message)
-// 		.filterByMessageChainType('GroupMessage')
-// 		.filterByMessageType('At')
-// 		.filterByTaget()
-// 		.filterByPlainText(text => {
-// 			const t = text.trim()
-// 			return t.includes('#')
-// 		})
-// 		.exec()
-// 	if(filterMsg) {
-// 		const find = filterMsg.data.messageChain.find(i => i.type === 'Plain') as Plain
-// 		const targetQQ = filterMsg.data.sender.id
-// 		// 添加用户
-// 		await GameUser.findOneAndUpdate({qq: targetQQ}, {
-// 			qq: targetQQ,
-// 			memberName: filterMsg.data.sender.memberName,
-// 			specialTitle: filterMsg.data.sender.specialTitle,
-// 		}, {upsert: true}).exec()
-// 		//////////////////////////////////// 下注流程 ////////////////////////////////////
-// 		const [words, value] = isBetCommand(find.text)
-// 		if(words && value) {
-// 			// 匹配关键词
-// 			const type = words.search((notLateRegexp)) >= 0 ? betType.不迟到 :
-// 				words.search((lateRegexp)) >= 0 ? betType.迟到 : undefined
-// 			if(type === undefined) return
-// 			// 存储下注积分
-// 			const [err] = await addOnlyOneDocument<PointIterface>({
-// 				qq: targetQQ,
-// 				betTime: {
-// 					$gt: dayjs().startOf('date').toDate()
-// 				}
-// 			}, {
-// 				qq: targetQQ,
-// 				betPoint: Number(value),
-// 				betType: type,
-// 			}, Point)
-// 			if(err) {
-// 				ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
-// 					.at(targetQQ)
-// 					.plain('\n' + getOneErrorMessage(err))
-// 					.face(undefined, '请/gun')
-// 					.exec()
-// 				return
-// 			}
-// 			// 成功提示
-// 			ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
-// 				.at(targetQQ)
-// 				.plain(`\n押注${betTypeText[type]}：${value}积分`)
-// 				.face(undefined, '吃糖')
-// 				.exec()
-// 		}
-// 		//////////////////////////////////// 签到流程 ////////////////////////////////////
-// 		if(isSignInCommand(find.text)) {
-// 			// 随机发积分
-// 			const userPoint = randomPoint()
-// 			const find = await UserPointsModel.findByQQ(targetQQ)
-// 			const { success: SignInSuccess, message: SignInMessage }  = await SignInModel.signIn(targetQQ)
-// 			if(SignInSuccess) {
-// 				const  {success: addPointSuccess, message: addPointMessage} = await find.addPoint(userPoint)
-// 				ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
-// 					.at(targetQQ)
-// 					.plain(addPointSuccess ? `\n签到成功！\n获得积分${userPoint}!` : `\n签到失败：\n${addPointMessage}`)
-// 					.exec()
-// 			}else {
-// 				ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
-// 					.at(targetQQ)
-// 					.plain(`\n签到失败：${SignInMessage}`)
-// 					.exec()
-// 			}
-// 		}
-// 		//////////////////////////////////// 获取摆子哥消息 ////////////////////////////////////
-// 	}
-// })
+const bet_2 = __importDefault(__webpack_require__(224));
+const dayjs_1 = __importDefault(__webpack_require__(349));
+const isBetween_1 = __importDefault(__webpack_require__(607));
+const base_config_1 = __importDefault(__webpack_require__(585));
+const flashImage_1 = __importDefault(__webpack_require__(814));
+const yuliumsg_1 = __importDefault(__webpack_require__(640));
+const lateRegexp = /迟到/gi;
+const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到|迟不到/gi;
+dayjs_1.default.extend(isBetween_1.default);
+// 保存闪照
+ws_1.EventFlow.saveFlashImage = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const { message } = context;
+    const find = (_b = (_a = message === null || message === void 0 ? void 0 : message.data) === null || _a === void 0 ? void 0 : _a.messageChain) === null || _b === void 0 ? void 0 : _b.find(mc => mc.type === 'FlashImage');
+    if (find === null || find === void 0 ? void 0 : find.url) {
+        const sender = message.data.sender.id;
+        flashImage_1.default.create({
+            qq: sender,
+            url: find.url
+        });
+    }
+});
 // 添加用户
 ws_1.EventFlow.addUser = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c, _d;
     const { message } = context;
-    const { data: { sender: { id, memberName, specialTitle } } } = message;
-    yield gameUser_1.default.findOneAndUpdate({ qq: id }, {
-        qq: id,
-        memberName: memberName,
-        specialTitle: specialTitle,
-    }, { upsert: true }).exec();
+    if ((_d = (_c = message === null || message === void 0 ? void 0 : message.data) === null || _c === void 0 ? void 0 : _c.sender) === null || _d === void 0 ? void 0 : _d.id) {
+        const { data: { sender: { id, memberName, specialTitle } } } = message;
+        yield gameUser_1.default.findOneAndUpdate({ qq: message.data.sender.id }, {
+            qq: message.data.sender.id,
+            memberName: memberName,
+            specialTitle: specialTitle,
+        }, { upsert: true }).exec();
+    }
 });
-// 筛选消息
+// 记录摆子哥消息
+ws_1.EventFlow.saveYuLiuMessage = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    const { message, targetQQ, commandText, text } = context;
+    // 8点到封盘的消息记录
+    if (dayjs_1.default().isBetween(dayjs_1.default().set('hours', 8).set('minutes', 0).set('seconds', 0), base_config_1.default.封盘时间())) {
+        if (targetQQ === system_config_1.default.yuliu_qq) {
+            yuliumsg_1.default.saveMsg(text);
+        }
+    }
+});
+// 筛选命令 #xxx 消息
 ws_1.EventFlow.filter = (context) => {
     var _a, _b, _c, _d;
     const { message } = context;
     const filterMsg = toolkits_1.default.get(message)
         .filterByMessageChainType('GroupMessage')
         .filterByMessageType('At')
-        .filterByTaget()
+        .filterByTaget(system_config_1.default.bot_qq)
         .filterByPlainText(text => {
         const t = text.trim();
         return t.includes('#');
     })
         .exec();
     // 把筛选后的消息带在上下文中
-    context.filterMsg = filterMsg;
-    context.filterText = (_d = (_c = (_b = (_a = filterMsg === null || filterMsg === void 0 ? void 0 : filterMsg.data) === null || _a === void 0 ? void 0 : _a.messageChain) === null || _b === void 0 ? void 0 : _b.find(i => i.type === 'Plain')) === null || _c === void 0 ? void 0 : _c.text) !== null && _d !== void 0 ? _d : '';
+    context.commandMessage = filterMsg;
+    context.commandText = (_d = (_c = (_b = (_a = filterMsg === null || filterMsg === void 0 ? void 0 : filterMsg.data) === null || _a === void 0 ? void 0 : _a.messageChain) === null || _b === void 0 ? void 0 : _b.find(i => i.type === 'Plain')) === null || _c === void 0 ? void 0 : _c.text) !== null && _d !== void 0 ? _d : '';
 };
+// 查询闪照
+ws_1.EventFlow.findFlashImage = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    const { message, targetQQ, commandText } = context;
+    const [word, value] = botCommand_1.getParamCommand(commandText);
+    if (word === '查询闪照') {
+        try {
+            const limit = 5;
+            if (!value)
+                throw new Error('\n请输入正确QQ号');
+            const res = yield flashImage_1.default.find({ qq: value }).sort({ createTime: 'desc' }).limit(limit).exec();
+            if (res.length <= 0)
+                throw new Error('\n没有数据');
+            let msg = '';
+            msg = res.reduce((pre, cur, curIndex) => {
+                return pre += `\n${dayjs_1.default(cur.createTime).format('YYYY-MM-DD')}：${cur.url}`;
+            }, '');
+            throw new Error(`\n<${value}>的最近${limit}张闪照地址：` + msg);
+        }
+        catch ({ message }) {
+            toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+                .plain(message)
+                .exec();
+        }
+    }
+});
 // 下注
 ws_1.EventFlow.bet = (context) => __awaiter(void 0, void 0, void 0, function* () {
-    const lateRegexp = /迟到/gi;
-    const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到/gi;
-    const { message, targetQQ, filterText } = context;
-    const [words, value] = botCommand_1.isBetCommand(filterText);
+    const { message, targetQQ, commandText } = context;
+    const [words, value] = botCommand_1.isBetCommand(commandText);
     if (words && value) {
         // 匹配关键词
-        const type = words.search((notLateRegexp)) >= 0 ? point_1.betType.不迟到 :
-            words.search((lateRegexp)) >= 0 ? point_1.betType.迟到 : undefined;
+        const type = words.search((notLateRegexp)) >= 0 ? bet_1.betType.不迟到 :
+            words.search((lateRegexp)) >= 0 ? bet_1.betType.迟到 : undefined;
         if (type === undefined)
             return;
         // 存储下注积分
-        const [err] = yield util_1.addOnlyOneDocument({
-            qq: targetQQ,
-            betTime: {
-                $gt: dayjs_1.default().startOf('date').toDate()
-            }
-        }, {
-            qq: targetQQ,
-            betPoint: Number(value),
-            betType: type,
-        }, point_1.default);
-        if (err) {
+        const { success, message } = yield bet_2.default.bet(type, targetQQ, Number(value));
+        if (message) {
             toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
                 .at(targetQQ)
-                .plain('\n' + util_1.getOneErrorMessage(err))
-                .face(undefined, '请/gun')
+                .plain('\n' + message)
+                .face(undefined, '请')
                 .exec();
             return;
         }
         // 成功提示
         toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
             .at(targetQQ)
-            .plain(`\n押注${point_1.betTypeText[type]}：${value}积分`)
+            .plain(`\n押注${bet_1.betTypeText[type]}：${value}积分`)
             .face(undefined, '吃糖')
+            .exec();
+    }
+});
+// 查询积分
+ws_1.EventFlow.queryPoints = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    const { message, targetQQ, commandText } = context;
+    if (botCommand_1.isQueryPoints(commandText)) {
+        const find = yield userPoints_1.default.findByQQ(targetQQ);
+        if (find) {
+            toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+                .at(targetQQ)
+                .plain(`\n当前还剩${find.remainPoints}积分\n${find.remainPoints < 10 ? '穷逼！' : find.remainPoints > 1000 ? '增有钱呐' : ''}`)
+                .exec();
+            return;
+        }
+        toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+            .at(targetQQ)
+            .plain('\n' + '没有记录，发送 #签到 试试？')
             .exec();
     }
 });
 // 签到
 ws_1.EventFlow.signIn = (context) => __awaiter(void 0, void 0, void 0, function* () {
-    const { message, targetQQ, filterText } = context;
-    if (botCommand_1.isSignInCommand(filterText)) {
+    const { message, targetQQ, commandText } = context;
+    if (botCommand_1.isSignInCommand(commandText)) {
         // 随机发积分
         const userPoint = randomPoint_1.default();
         const find = yield userPoints_1.default.findByQQ(targetQQ);
@@ -202,7 +181,7 @@ ws_1.EventFlow.signIn = (context) => __awaiter(void 0, void 0, void 0, function*
             const { success: addPointSuccess, message: addPointMessage } = yield find.addPoint(userPoint);
             toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
                 .at(targetQQ)
-                .plain(addPointSuccess ? `\n签到成功！\n获得积分${userPoint}!` : `\n签到失败：\n${addPointMessage}`)
+                .plain(addPointSuccess ? `\n签到成功！\n获得积分${userPoint}!\n${userPoint <= 5 ? 'maybe!' : ''}` : `\n签到失败：\n${addPointMessage}`)
                 .exec();
         }
         else {
@@ -213,6 +192,445 @@ ws_1.EventFlow.signIn = (context) => __awaiter(void 0, void 0, void 0, function*
         }
     }
 });
+// 查询投注
+ws_1.EventFlow.queryBet = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    var _e, _f, _g, _h, _j, _k, _l, _m;
+    const { message, targetQQ, commandText, commandMessage } = context;
+    // const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(commandMessage).filterBySender(SystemConfig.admin_qq).exec()
+    if (botCommand_1.isQueryBet(commandText)) {
+        const res = yield bet_2.default.aggregate([
+            {
+                $facet: {
+                    late: [
+                        {
+                            $match: {
+                                betTime: {
+                                    $gt: dayjs_1.default().startOf('date').toDate(),
+                                    $lt: base_config_1.default.封盘时间().toDate()
+                                },
+                                betType: { $eq: bet_1.betType.迟到 }
+                            },
+                        },
+                        {
+                            $group: {
+                                _id: 'null',
+                                betPoints: { $sum: '$betPoint' },
+                                betNum: { $sum: 1 },
+                                betUser: { $push: { qq: '$qq', betPoint: '$betPoint' } }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                betPoints: 1,
+                                betNum: 1,
+                                betUser: 1
+                            }
+                        }
+                    ],
+                    notLate: [
+                        {
+                            $match: {
+                                betTime: {
+                                    $gt: dayjs_1.default().startOf('date').toDate(),
+                                    $lt: base_config_1.default.封盘时间().toDate()
+                                },
+                                betType: { $eq: bet_1.betType.不迟到 }
+                            }
+                        },
+                        {
+                            // 根据下注类别分组
+                            $group: {
+                                _id: 'null',
+                                betPoints: { $sum: '$betPoint' },
+                                betNum: { $sum: 1 },
+                                betUser: { $push: { qq: '$qq', betPoint: '$betPoint' } }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                betPoints: 1,
+                                betNum: 1,
+                                betUser: 1
+                            }
+                        }
+                    ],
+                    targetUserBet: [
+                        {
+                            $match: {
+                                betTime: {
+                                    $gt: dayjs_1.default().startOf('date').toDate(),
+                                    $lt: base_config_1.default.封盘时间().toDate()
+                                },
+                                qq: { $eq: String(targetQQ) }
+                            }
+                        },
+                        {
+                            $project: {
+                                betPoint: 1,
+                                betTime: 1,
+                                betType: 1
+                            }
+                        }
+                    ]
+                }
+            }
+        ]).exec();
+        const lateTotal = (_f = (_e = res[0].late[0]) === null || _e === void 0 ? void 0 : _e.betPoints) !== null && _f !== void 0 ? _f : 0;
+        const notLateTotal = (_h = (_g = res[0].notLate[0]) === null || _g === void 0 ? void 0 : _g.betPoints) !== null && _h !== void 0 ? _h : 0;
+        const total = lateTotal + notLateTotal;
+        const lateNum = (_k = (_j = res[0].late[0]) === null || _j === void 0 ? void 0 : _j.betNum) !== null && _k !== void 0 ? _k : 0;
+        const notLateNum = (_m = (_l = res[0].notLate[0]) === null || _l === void 0 ? void 0 : _l.betNum) !== null && _m !== void 0 ? _m : 0;
+        let forecast;
+        if (res[0].targetUserBet[0]) {
+            const { betPoint, betTime, betType: userBetType } = res[0].targetUserBet[0];
+            if (userBetType === bet_1.betType.迟到) {
+                forecast = Math.floor((betPoint / lateTotal) * total);
+            }
+            else {
+                forecast = Math.floor((betPoint / notLateTotal) * total);
+            }
+        }
+        toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+            .at(targetQQ)
+            .plain(`
+      今日投注情况：
+      迟到：${lateTotal}积分（${lateNum}人）
+      不迟到：${notLateTotal}积分（${notLateNum}人）
+      ${forecast ? `<${targetQQ}>已投注<${bet_1.betTypeText[res[0].targetUserBet[0].betType]}>预计可获得：${forecast}积分` : ''}
+      `)
+            .exec();
+    }
+});
+// 结算
+ws_1.EventFlow.accountBet = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    var _o, _p, _q, _r;
+    const { message, targetQQ, commandMessage } = context;
+    const filterMsg = toolkits_1.default.get(commandMessage).filterBySender([system_config_1.default.admin_qq, system_config_1.default.yuliu_qq]).exec();
+    const [word, value] = botCommand_1.getParamCommand((_r = (_q = (_p = (_o = filterMsg === null || filterMsg === void 0 ? void 0 : filterMsg.data) === null || _o === void 0 ? void 0 : _o.messageChain) === null || _p === void 0 ? void 0 : _p.find(i => i.type === 'Plain')) === null || _q === void 0 ? void 0 : _q.text) !== null && _r !== void 0 ? _r : '');
+    if (word === '结算') {
+        // 结算命令type
+        let type = value.search((notLateRegexp)) >= 0 ? bet_1.betType.不迟到 :
+            value.search((lateRegexp)) >= 0 ? bet_1.betType.迟到 : undefined;
+        // 查询今日所有投注
+        const todayAllBet = yield bet_2.default.aggregate([
+            {
+                $match: {
+                    betTime: {
+                        $gt: dayjs_1.default().startOf('date').toDate(),
+                        $lt: base_config_1.default.封盘时间().toDate()
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'gameusers',
+                    let: { qq: '$qq' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    // $$是外表的 $是内表的
+                                    $eq: ['$$qq', '$qq']
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                memberName: 1,
+                                specialTitle: 1,
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: 'userpoints',
+                                pipeline: [
+                                    {
+                                        $match: {
+                                            $expr: {
+                                                // $$是外表的 $是内表的
+                                                $eq: ['$$qq', '$qq']
+                                            }
+                                        }
+                                    },
+                                ],
+                                as: 'userpoints'
+                            }
+                        },
+                        {
+                            $unwind: {
+                                path: '$userpoints'
+                            }
+                        },
+                        {
+                            $replaceRoot: { newRoot: { $mergeObjects: ['$userpoints', '$$ROOT'] } }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                memberName: 1,
+                                remainPoints: 1,
+                                specialTitle: 1,
+                                totalPoints: 1
+                            }
+                        }
+                    ],
+                    as: 'gameusers'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$gameusers'
+                }
+            },
+        ]).exec();
+        if (todayAllBet.length <= 0) {
+            // 没人投注
+            toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+                .at(targetQQ)
+                .plain('今天还没有人下注')
+                .exec();
+            return;
+        }
+        // 是否已结算
+        const isAreadyAccount = todayAllBet[0].betState !== bet_1.betState.未结束;
+        type = isAreadyAccount ? todayAllBet[0].betState : type;
+        let totalPoints = 0;
+        let lateTotal = 0;
+        let notLateTotal = 0;
+        todayAllBet.forEach(data => {
+            totalPoints += data.betPoint;
+            if (data.betType === bet_1.betType.迟到) {
+                lateTotal += data.betPoint;
+            }
+            else {
+                notLateTotal += data.betPoint;
+            }
+        });
+        // 计算个人获得
+        const caclPoint = (data) => {
+            const { betPoint, betType: dataBetType, betProfit } = data;
+            if (isAreadyAccount) {
+                return betProfit;
+            }
+            else {
+                if (dataBetType === bet_1.betType.不迟到) {
+                    return (type === dataBetType || type === undefined) ? Math.floor((betPoint / notLateTotal) * totalPoints) : 0;
+                }
+                else {
+                    return (type === dataBetType || type === undefined) ? Math.floor((betPoint / lateTotal) * totalPoints) : 0;
+                }
+            }
+        };
+        let sendStr = '\n请输入"迟到"或者"没有迟到"';
+        const willUpdate = [];
+        if (todayAllBet.length > 0) {
+            // 计算得分
+            // const t = new Table
+            const t = new textTable_1.default;
+            todayAllBet.forEach(function (data) {
+                // 计算盈利
+                const profit = caclPoint(data);
+                willUpdate.push(Object.assign(Object.assign({}, data), { betProfit: profit }));
+                t.cell('昵称', data.gameusers.memberName);
+                t.cell('投注类型', bet_1.betTypeText[data.betType]);
+                t.cell('投注积分', data.betPoint);
+                t.cell('剩余积分', data.gameusers.remainPoints);
+                t.cell(isAreadyAccount ? '获得积分' : '预计得分', profit);
+            });
+            sendStr = t.output();
+        }
+        if (type !== undefined && !isAreadyAccount) {
+            willUpdate.forEach((i) => {
+                userPoints_1.default.updateOne({
+                    qq: i.qq
+                }, {
+                    $inc: {
+                        remainPoints: i.betProfit
+                    }
+                }).exec();
+                bet_2.default.updateOne({
+                    qq: i.qq
+                }, {
+                    $set: {
+                        betState: i.betType,
+                        betProfit: i.betProfit
+                    }
+                }).exec();
+            });
+        }
+        toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+            .at(targetQQ)
+            .plain('\n' + `${(isAreadyAccount || type !== undefined) ? `已结算<${bet_1.betTypeText[type] || bet_1.betStateText[todayAllBet[0].betState]}>` : '未结算'}` + '\n' + sendStr + '\n')
+            .exec();
+    }
+});
+// 积分排行榜
+ws_1.EventFlow.pointsRank = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    const { message, targetQQ, commandText } = context;
+    if (botCommand_1.isCommand(commandText, /积分排行/ig)) {
+        const res = yield userPoints_1.default.aggregate([
+            {
+                $sort: {
+                    remainPoints: -1
+                }
+            },
+            {
+                $lookup: {
+                    from: 'gameusers',
+                    let: { qq: '$qq' },
+                    as: 'gameusers',
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    // $$是外表的 $是内表的
+                                    $eq: ['$$qq', '$qq']
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                memberName: 1,
+                                specialTitle: 1,
+                            }
+                        },
+                    ]
+                }
+            },
+            {
+                $unwind: {
+                    path: '$gameusers'
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    qq: 1,
+                    totalPoints: 1,
+                    remainPoints: 1,
+                    gameusers: 1
+                }
+            },
+        ]).exec();
+        const t = new textTable_1.default;
+        const len = res.length;
+        const size = 5;
+        let index = 0;
+        let rank = 1;
+        while (index < len) {
+            res.slice(index, (index += size)).forEach((r, index) => {
+                t.cell('排名', rank++);
+                t.cell('昵称', r.gameusers.memberName);
+                t.cell('剩余积分', r.remainPoints);
+                t.cell('总获得积分', r.totalPoints);
+            });
+            let sendStr = t.output();
+            toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+                .plain('\n' + sendStr + '\n')
+                .exec();
+        }
+    }
+});
+// 抽奖
+ws_1.EventFlow.luckDraw = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    const { message, targetQQ, commandText } = context;
+    if (botCommand_1.isCommand(commandText, /抽奖/ig)) {
+        let str = '';
+        const find = yield userPoints_1.default.find({ qq: targetQQ }).exec();
+        if (find && find.length > 0 && find[0].remainPoints >= 5) {
+            yield userPoints_1.default.updateOne({
+                qq: targetQQ
+            }, {
+                $inc: {
+                    remainPoints: -5
+                }
+            }).exec();
+            let gainPoints = 0;
+            let num = Math.ceil(Math.random() * 1000);
+            if (num > 0 && num < 500) {
+                gainPoints = 0;
+                str = '谢谢惠顾';
+            }
+            else if (num >= 500 && num < 800) {
+                gainPoints = 10;
+                str = '中奖10积分';
+            }
+            else if (num >= 800 && num < 950) {
+                gainPoints = 100;
+                str = '中奖100积分!';
+            }
+            else if (num > 950) {
+                gainPoints = 1000;
+                str = '中奖1000积分!!';
+            }
+            yield userPoints_1.default.updateOne({
+                qq: targetQQ
+            }, {
+                $inc: {
+                    remainPoints: gainPoints
+                }
+            }).exec();
+        }
+        else {
+            str = '你没有足够的积分！每次抽奖消耗<5>积分，请先获取积分，如签到';
+        }
+        toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+            .at(targetQQ)
+            .plain('\n' + str + '\n')
+            .exec();
+    }
+});
+// 帮助
+ws_1.EventFlow.help = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    const { message, targetQQ, commandText, commandMessage } = context;
+    if (botCommand_1.isCommand(commandText, /命令/gi)) {
+        let str = '';
+        for (let key in botCommand_1.commandList) {
+            str += `\n${key}：${botCommand_1.commandList[key]}`;
+        }
+        toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+            .at(targetQQ)
+            .plain(str)
+            .exec();
+    }
+});
+
+
+/***/ }),
+
+/***/ 585:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const dayjs_1 = __importDefault(__webpack_require__(349));
+/**
+ * 当天上班时间
+ */
+function getTodayWorkTime() {
+    return dayjs_1.default().set('hours', 9).set('minutes', 30).set('seconds', 0);
+}
+/**
+ * 当天封盘时间
+ */
+function getBetClosingTime() {
+    return getTodayWorkTime().subtract(10, 'minute');
+    // return dayjs().endOf('date')
+}
+const BaseConfig = {
+    '迟到扣钱': 30,
+    '上班时间': getTodayWorkTime,
+    '封盘时间': getBetClosingTime
+};
+exports.default = BaseConfig;
 
 
 /***/ }),
@@ -220,6 +638,7 @@ ws_1.EventFlow.signIn = (context) => __awaiter(void 0, void 0, void 0, function*
 /***/ 692:
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const DBConfig = {
@@ -239,6 +658,7 @@ exports.default = DBConfig;
 /***/ 8:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -293,23 +713,25 @@ exports.default = {
 /***/ 522:
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const runOnPro = "production" === 'production';
 const SystemConfig = {
     /** 服务器地址 */
-    wsPath: 'ws://ws.dangdangdang.top',
+    wsPath: runOnPro ? 'ws://172.17.82.247:3002' : 'ws://ws.dangdangdang.top',
     /** http地址 */
-    httpPath: 'http://api.dangdangdang.top',
-    // /** 服务器地址 */
-    // wsPath: process.env.TS_NODE_DEV ? 'ws://ws.dangdangdang.top' : 'ws://172.17.82.247:3002',
-    // /** http地址 */
-    // httpPath: process.env.TS_NODE_DEV ? 'http://api.dangdangdang.top' : 'http://172.17.82.247:3001',
+    httpPath: runOnPro ? 'http://172.17.82.247:3001' : 'http://api.dangdangdang.top',
     /** 鉴权key */
     verifyKey: 1234567890,
     /** bot的qq号 */
-    bot_qq: 1092946821,
+    bot_qq: '1092946821',
     /** qq群号 */
-    group_qq: 599869861,
+    group_qq: '599869861',
+    /** 管理员qq */
+    admin_qq: '929175050',
+    /** 摆子哥qq */
+    yuliu_qq: '1916300010'
 };
 exports.default = SystemConfig;
 
@@ -319,6 +741,7 @@ exports.default = SystemConfig;
 /***/ 40:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -343,9 +766,207 @@ exports.default = mongoose_1.default;
 
 /***/ }),
 
+/***/ 224:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.betStateText = exports.betState = exports.betTypeText = exports.betType = void 0;
+const base_config_1 = __importDefault(__webpack_require__(585));
+const tryCatchPromise_1 = __importDefault(__webpack_require__(727));
+const error_1 = __webpack_require__(551);
+const dayjs_1 = __importDefault(__webpack_require__(349));
+const mongoose_1 = __webpack_require__(619);
+const userPoints_1 = __importDefault(__webpack_require__(90));
+var betType;
+(function (betType) {
+    betType[betType["\u8FDF\u5230"] = 0] = "\u8FDF\u5230";
+    betType[betType["\u4E0D\u8FDF\u5230"] = 1] = "\u4E0D\u8FDF\u5230";
+})(betType = exports.betType || (exports.betType = {}));
+exports.betTypeText = {
+    [betType.迟到]: '迟到',
+    [betType.不迟到]: '不迟到',
+};
+var betState;
+(function (betState) {
+    betState[betState["\u8FDF\u5230"] = 0] = "\u8FDF\u5230";
+    betState[betState["\u4E0D\u8FDF\u5230"] = 1] = "\u4E0D\u8FDF\u5230";
+    betState[betState["\u672A\u7ED3\u675F"] = 2] = "\u672A\u7ED3\u675F";
+})(betState = exports.betState || (exports.betState = {}));
+exports.betStateText = {
+    [betState.迟到]: '迟到',
+    [betState.不迟到]: '不迟到',
+    [betState.未结束]: '未结束',
+};
+const BetSchema = new mongoose_1.Schema({
+    qq: {
+        type: mongoose_1.Schema.Types.String,
+        required: true
+    },
+    betPoint: {
+        type: mongoose_1.Schema.Types.Number,
+        require: false,
+        validate: {
+            validator: function (v) {
+                if (v < 0) {
+                    error_1.thorwCustomError('只能投注正数');
+                }
+                if (!Number.isInteger(v)) {
+                    error_1.thorwCustomError('只能投注整数');
+                }
+                return true;
+            },
+        },
+        default: () => 0
+    },
+    betTime: {
+        type: mongoose_1.Schema.Types.Date,
+        require: false,
+        default: () => dayjs_1.default().toDate()
+    },
+    betType: {
+        type: mongoose_1.Schema.Types.Number,
+        require: false
+    },
+    betState: {
+        type: mongoose_1.Schema.Types.Number,
+        require: false,
+        default: () => betState.未结束
+    },
+    betProfit: {
+        type: mongoose_1.Schema.Types.Number,
+        require: false,
+        default: () => 0
+    }
+});
+class LoadClass {
+    static bet(betType, qq, point) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (dayjs_1.default().isAfter(base_config_1.default.封盘时间())) {
+                error_1.thorwCustomError(`每天 ${base_config_1.default.封盘时间().format('HH:mm:ss')} 前可投注！`);
+            }
+            if (point <= 0 || !Number.isInteger(point)) {
+                error_1.thorwCustomError('只能为正整数');
+            }
+            const betRecord = yield this.findByQQ(qq, {
+                betTime: {
+                    $gt: dayjs_1.default().startOf('date').toDate(),
+                    $lt: base_config_1.default.封盘时间().toDate()
+                }
+            });
+            const userPoint = yield userPoints_1.default.findByQQ(qq);
+            if (betRecord && (betRecord === null || betRecord === void 0 ? void 0 : betRecord.betType) !== undefined && betRecord.betType !== betType) {
+                error_1.thorwCustomError(`你已认定摆子哥 ${exports.betTypeText[betRecord.betType]}了!改不了咯~`);
+            }
+            if (userPoint.remainPoints >= point) {
+                yield betRecord.updateOne({
+                    $inc: {
+                        betPoint: point
+                    },
+                    betTime: dayjs_1.default().toDate(),
+                    betType: betType
+                }).exec();
+                yield userPoint.updateOne({
+                    $inc: {
+                        remainPoints: -point
+                    }
+                }).exec();
+            }
+            else {
+                error_1.thorwCustomError('你没有足够的积分！穷逼!');
+            }
+        });
+    }
+    static findByQQ(qq, otherFilter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const find = yield this.findOne(Object.assign({ qq }, otherFilter)).exec();
+            if (find) {
+                return find;
+            }
+            else {
+                return yield this.create({
+                    qq,
+                    betState: betState.未结束
+                });
+            }
+        });
+    }
+}
+__decorate([
+    tryCatchPromise_1.default(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String, Number]),
+    __metadata("design:returntype", Promise)
+], LoadClass, "bet", null);
+BetSchema.loadClass(LoadClass);
+// 创建表 实例化Schema
+const BetModel = mongoose_1.model('Bet', BetSchema);
+exports.default = BetModel;
+
+
+/***/ }),
+
+/***/ 814:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const dayjs_1 = __importDefault(__webpack_require__(349));
+const mongoose_1 = __webpack_require__(619);
+const FlashImageSchema = new mongoose_1.Schema({
+    qq: {
+        type: mongoose_1.Schema.Types.String,
+        required: true
+    },
+    url: {
+        type: mongoose_1.Schema.Types.String,
+        require: true,
+    },
+    createTime: {
+        type: mongoose_1.Schema.Types.String,
+        require: false,
+        default: () => dayjs_1.default().toDate()
+    }
+});
+class LoadClass {
+}
+FlashImageSchema.loadClass(LoadClass);
+const FlashImageModel = mongoose_1.model('FlashImage', FlashImageSchema);
+exports.default = FlashImageModel;
+
+
+/***/ }),
+
 /***/ 94:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const mongoose_1 = __webpack_require__(619);
@@ -371,65 +992,10 @@ exports.default = (mongoose_1.models && mongoose_1.models.GameUser) || mongoose_
 
 /***/ }),
 
-/***/ 831:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.betTypeText = exports.betType = void 0;
-const dayjs_1 = __importDefault(__webpack_require__(349));
-const mongoose_1 = __webpack_require__(619);
-var betType;
-(function (betType) {
-    betType[betType["\u8FDF\u5230"] = 0] = "\u8FDF\u5230";
-    betType[betType["\u4E0D\u8FDF\u5230"] = 1] = "\u4E0D\u8FDF\u5230";
-})(betType = exports.betType || (exports.betType = {}));
-exports.betTypeText = {
-    [betType.迟到]: '迟到',
-    [betType.不迟到]: '不迟到',
-};
-const PointSchema = new mongoose_1.Schema({
-    qq: {
-        type: mongoose_1.Schema.Types.String,
-        required: true
-    },
-    betPoint: {
-        type: mongoose_1.Schema.Types.Number,
-        require: true,
-        validate: {
-            validator: function (v) {
-                if (v < 0) {
-                    throw new Error('只能投注正数');
-                }
-                if (!Number.isInteger(v)) {
-                    throw new Error('只能投注整数');
-                }
-                return true;
-            },
-        },
-    },
-    betTime: {
-        type: mongoose_1.Schema.Types.Date,
-        require: false,
-        default: () => dayjs_1.default().toDate()
-    },
-    betType: {
-        type: mongoose_1.Schema.Types.Number,
-        require: true,
-    }
-});
-// 防止重复定义模型
-exports.default = (mongoose_1.models && mongoose_1.models.Point) || mongoose_1.model('Point', PointSchema);
-
-
-/***/ }),
-
 /***/ 68:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -454,6 +1020,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const tryCatchPromise_1 = __importDefault(__webpack_require__(727));
+const error_1 = __webpack_require__(551);
 const dayjs_1 = __importDefault(__webpack_require__(349));
 const mongoose_1 = __webpack_require__(619);
 const SignInSchema = new mongoose_1.Schema({
@@ -482,13 +1049,13 @@ class LoadClass {
                 });
             }
             else {
-                throw new Error('今天已签到');
+                error_1.thorwCustomError('今天已签到');
             }
         });
     }
 }
 __decorate([
-    tryCatchPromise_1.default('签到失败！'),
+    tryCatchPromise_1.default(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
@@ -504,6 +1071,7 @@ exports.default = SignInModel;
 /***/ 90:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -529,6 +1097,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const mongoose_1 = __webpack_require__(619);
 const tryCatchPromise_1 = __importDefault(__webpack_require__(727));
+const error_1 = __webpack_require__(551);
 // 创建结构
 const UserPointSchema = new mongoose_1.Schema({
     qq: {
@@ -541,10 +1110,10 @@ const UserPointSchema = new mongoose_1.Schema({
         validate: {
             validator: function (v) {
                 if (v < 0) {
-                    throw new Error('不能再减少');
+                    error_1.thorwCustomError('不能再减少');
                 }
                 if (!Number.isInteger(v)) {
-                    throw new Error('只能为整数');
+                    error_1.thorwCustomError('只能为整数');
                 }
                 return true;
             },
@@ -557,10 +1126,10 @@ const UserPointSchema = new mongoose_1.Schema({
         validate: {
             validator: function (v) {
                 if (v < 0) {
-                    throw new Error('不能再减少');
+                    error_1.thorwCustomError('不能再减少');
                 }
                 if (!Number.isInteger(v)) {
-                    throw new Error('只能为整数');
+                    error_1.thorwCustomError('只能为整数');
                 }
                 return true;
             },
@@ -624,10 +1193,20 @@ exports.default = UserPointsModel;
 
 /***/ }),
 
-/***/ 854:
+/***/ 640:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -641,42 +1220,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOneErrorMessage = exports.addOnlyOneDocument = void 0;
-const logger_1 = __importDefault(__webpack_require__(514));
-/**
- * 插入唯一的数据
- * @param id 筛选条件
- * @param data 插入数据
- * @param model 要被插入数据的model
- * @returns 插入成功返回`true`插入失败返回`false`
- */
-function addOnlyOneDocument(id, data, model) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const find = yield model.find(id).exec();
-        if (find.length > 0) {
-            return [{ foo: { reason: { message: '已有记录' } } }, false];
-        }
-        else {
-            try {
-                yield model.create(data);
-            }
-            catch (err) {
-                logger_1.default('db', 'error', err.errors);
-                return [err.errors, false];
-            }
-            return [null, true];
-        }
-    });
+const tryCatchPromise_1 = __importDefault(__webpack_require__(727));
+const dayjs_1 = __importDefault(__webpack_require__(349));
+const mongoose_1 = __webpack_require__(619);
+const YuliuMsgSchema = new mongoose_1.Schema({
+    msg: {
+        type: mongoose_1.Schema.Types.String,
+        required: true
+    },
+    saveTime: {
+        type: mongoose_1.Schema.Types.Date,
+        require: false,
+        default: () => dayjs_1.default().toDate()
+    }
+});
+class LoadClass {
+    static saveMsg(msg) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.create({
+                msg
+            });
+        });
+    }
 }
-exports.addOnlyOneDocument = addOnlyOneDocument;
-/**
- * 获取第一个错误消息
- * @returns 错误消息
- */
-function getOneErrorMessage(errors) {
-    return errors[Object.keys(errors)[0]].reason.message;
-}
-exports.getOneErrorMessage = getOneErrorMessage;
+__decorate([
+    tryCatchPromise_1.default(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], LoadClass, "saveMsg", null);
+YuliuMsgSchema.loadClass(LoadClass);
+// 创建表 实例化Schema
+const YuliuMsgModel = mongoose_1.model('YuliuMsg', YuliuMsgSchema);
+exports.default = YuliuMsgModel;
 
 
 /***/ }),
@@ -684,6 +1260,7 @@ exports.getOneErrorMessage = getOneErrorMessage;
 /***/ 718:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -704,6 +1281,7 @@ exports.store = toolkit_1.configureStore({
 /***/ 578:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.saveSession = exports.sessionSlice = void 0;
@@ -742,6 +1320,7 @@ exports.default = exports.sessionSlice.reducer;
 /***/ 768:
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CodeEnum = exports.CodeText = void 0;
@@ -779,16 +1358,66 @@ var CodeEnum;
 /***/ 836:
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isSignInCommand = exports.isBetCommand = void 0;
-function isBetCommand(text) {
+exports.isQueryBet = exports.isQueryPoints = exports.isSignInCommand = exports.isBetCommand = exports.getParamCommand = exports.isCommand = exports.commandList = void 0;
+exports.commandList = {
+    '投注': '#[迟到 | 没迟到] [投注点数]',
+    '查询积分': '#查询积分',
+    '签到': '#签到',
+    '查询投注': '#查询投注',
+    '结算': '#结算 [迟到 | 没迟到]',
+};
+/**
+ * 一句话命令
+ */
+function isCommand(text, match) {
+    if (!text)
+        return;
+    const blockComand = text.split('#');
+    if (match instanceof RegExp) {
+        return match.test(blockComand[1]);
+    }
+    else {
+        return blockComand[1] === match;
+    }
+}
+exports.isCommand = isCommand;
+/**
+ * 带一个参数的命令
+ */
+function getParamCommand(text) {
+    if (!text)
+        return ['', ''];
     const blockComand = text.split('#');
     if (blockComand.length === 2) {
         const comand = blockComand[1].split(' ');
         if (comand.length === 2) {
             const [words, value] = comand;
             return [words, value];
+        }
+        else {
+            return [comand[0], ''];
+        }
+    }
+    return ['', ''];
+}
+exports.getParamCommand = getParamCommand;
+/**
+ * 投注命令
+ */
+function isBetCommand(text) {
+    if (!text)
+        return ['', ''];
+    const blockComand = text.split('#');
+    if (blockComand.length === 2) {
+        const comand = blockComand[1].split(' ');
+        if (comand.length === 2) {
+            const [words, value] = comand;
+            if (!isNaN(Number(value))) {
+                return [words, value];
+            }
         }
     }
     return ['', ''];
@@ -798,6 +1427,8 @@ exports.isBetCommand = isBetCommand;
  * 签到命令
  */
 function isSignInCommand(text) {
+    if (!text)
+        return;
     const regexp = /签到$/gi;
     const blockComand = text.split('#');
     if (blockComand.length === 2) {
@@ -808,6 +1439,26 @@ function isSignInCommand(text) {
     return false;
 }
 exports.isSignInCommand = isSignInCommand;
+/**
+ * 查询积分
+ */
+function isQueryPoints(text) {
+    if (!text)
+        return;
+    const blockComand = text.split('#');
+    return blockComand[1] === '查询积分';
+}
+exports.isQueryPoints = isQueryPoints;
+/**
+ * 查询投注情况
+ */
+function isQueryBet(text) {
+    if (!text)
+        return;
+    const blockComand = text.split('#');
+    return blockComand[1] === '查询投注';
+}
+exports.isQueryBet = isQueryBet;
 
 
 /***/ }),
@@ -815,6 +1466,7 @@ exports.isSignInCommand = isSignInCommand;
 /***/ 580:
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 /**
@@ -855,6 +1507,7 @@ exports.default = default_1;
 /***/ 727:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -869,10 +1522,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const error_1 = __webpack_require__(551);
 const logger_1 = __importDefault(__webpack_require__(514));
 /**
  * 包装try catch的装饰器
- * @param errorMessage 错误消息
+ * 没有返回数据的操作才能用tryCatchPromise
+ * @param errorMessage 错误消息 (不填写需要自己抛出错误)
  */
 function default_1(errorMessage) {
     return function (target, propertyKey, descriptor) {
@@ -886,9 +1541,11 @@ function default_1(errorMessage) {
                     };
                 }
                 catch (err) {
-                    logger_1.default('db', 'error', err);
+                    if (err.name !== error_1.ErrorNames.custom) {
+                        logger_1.default('db', 'error', err);
+                    }
                     return {
-                        message: err.message || errorMessage
+                        message: errorMessage || err.message
                     };
                 }
             });
@@ -900,9 +1557,30 @@ exports.default = default_1;
 
 /***/ }),
 
+/***/ 551:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.thorwCustomError = exports.ErrorNames = void 0;
+exports.ErrorNames = {
+    custom: 'custom'
+};
+function thorwCustomError(message) {
+    const error = new Error(message);
+    error.name = 'custom';
+    throw error;
+}
+exports.thorwCustomError = thorwCustomError;
+
+
+/***/ }),
+
 /***/ 514:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -922,6 +1600,7 @@ exports.default = logger;
 /***/ 418:
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const MIN = 1;
@@ -949,11 +1628,13 @@ exports.default = randomPoint;
 /***/ 372:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getSession = void 0;
 const store_1 = __webpack_require__(718);
 const sessionSlice_1 = __webpack_require__(578);
+const error_1 = __webpack_require__(551);
 /**
  * 返回session和保存session到store
  * @param jsonMsg
@@ -970,7 +1651,7 @@ function getSession(jsonMsg) {
             return jsonMsg.data.session;
         }
         else {
-            throw new Error('no session!');
+            error_1.thorwCustomError('no session!');
         }
     }
 }
@@ -979,9 +1660,126 @@ exports.getSession = getSession;
 
 /***/ }),
 
+/***/ 841:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ToDBC = void 0;
+class TextTable {
+    // 保存单元格
+    constructor(cells = [], fullWidthSpace = '　', columns = [], maxRows = 0) {
+        this.cells = cells;
+        this.fullWidthSpace = fullWidthSpace;
+        this.columns = columns;
+        this.maxRows = maxRows;
+    }
+    // 侦测值
+    detectValue(str) {
+        const wcWidth = str.length;
+        const strWidth = str.length;
+        return {
+            width: wcWidth,
+            isFullWidth: strWidth !== wcWidth
+        };
+    }
+    // 计算每列最长长度
+    calculateColMaxWidth() {
+        this.columns.forEach((col) => {
+            let colMaxWidth = 0;
+            const colNameWidth = col.colName.length;
+            this.maxRows = col.colValues.length > this.maxRows ? col.colValues.length : this.maxRows;
+            col.colValues.forEach(v => {
+                const w = String(v).length;
+                colMaxWidth = w > colMaxWidth ? w : colMaxWidth;
+            });
+            colMaxWidth = colNameWidth > colMaxWidth ? colNameWidth : colMaxWidth;
+            col.maxWidth = colMaxWidth;
+        });
+    }
+    // 存储列行 列
+    cell(colName, colValue, render) {
+        const strValue = ToDBC(String(colValue));
+        this.cells.push({
+            colName,
+            colValue: strValue,
+            detectedResult: this.detectValue(strValue)
+        });
+        const find = this.columns.find(c => c.colName === colName);
+        if (find) {
+            find.colValues.push(strValue);
+        }
+        else {
+            this.columns.push({
+                colName,
+                colValues: [strValue],
+            });
+        }
+    }
+    // 渲染每一行
+    renderRow() {
+        let outStr = '';
+        const maxRows = this.maxRows;
+        for (let rowIndex = -2; rowIndex < maxRows; rowIndex++) {
+            this.columns.forEach((col, index) => {
+                let v = '';
+                if (rowIndex === -2) {
+                    v = col.colName;
+                }
+                else if (rowIndex === -1) {
+                    v = '＝'.repeat(col.maxWidth);
+                }
+                else {
+                    v = String(col.colValues[rowIndex]);
+                }
+                outStr += v;
+                outStr += this.fullWidthSpace.repeat(col.maxWidth + 2 - v.length);
+            });
+            outStr += '\n';
+        }
+        return outStr;
+    }
+    // 输出
+    output() {
+        this.calculateColMaxWidth();
+        const res = this.renderRow();
+        this.reset();
+        return res;
+    }
+    // 清空
+    reset() {
+        this.cells = [],
+            this.columns = [],
+            this.maxRows = 0;
+    }
+}
+// 半角转全角
+function ToDBC(txtstring) {
+    let tmp = '';
+    for (let i = 0; i < txtstring.length; i++) {
+        if (txtstring.charCodeAt(i) == 32) {
+            tmp += String.fromCharCode(12288);
+            continue;
+        }
+        else if (txtstring.charCodeAt(i) < 127) {
+            tmp += String.fromCharCode(txtstring.charCodeAt(i) + 65248);
+            continue;
+        }
+        tmp += txtstring[i];
+    }
+    return tmp;
+}
+exports.ToDBC = ToDBC;
+exports.default = TextTable;
+
+
+/***/ }),
+
 /***/ 116:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -996,7 +1794,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const system_config_1 = __importDefault(__webpack_require__(522));
 const getMessageFilter_1 = __importDefault(__webpack_require__(580));
 class GetMessage {
     constructor(msg) {
@@ -1044,24 +1841,10 @@ class GetMessage {
      * 消息发送者qq号筛选
      */
     filterBySender(qq, message) {
+        var _a, _b;
         if (message) {
-            if (message.data.sender.id === qq) {
-                this.filteredMsg = message;
-            }
-            else {
-                this.filteredMsg = undefined;
-            }
-        }
-        return this;
-    }
-    /**
-     * 消息接收者qq号筛选
-     * @param qq 默认是bot的qq
-     */
-    filterByTaget(qq = system_config_1.default.bot_qq, message) {
-        if (message) {
-            if (message.data.messageChain) {
-                if (message.data.messageChain.some(i => i.target === qq)) {
+            if (Array.isArray(qq)) {
+                if (qq.some(q => { var _a, _b; return q === String((_b = (_a = message === null || message === void 0 ? void 0 : message.data) === null || _a === void 0 ? void 0 : _a.sender) === null || _b === void 0 ? void 0 : _b.id); })) {
                     this.filteredMsg = message;
                 }
                 else {
@@ -1069,9 +1852,30 @@ class GetMessage {
                 }
             }
             else {
-                this.filteredMsg = undefined;
+                if (String((_b = (_a = message === null || message === void 0 ? void 0 : message.data) === null || _a === void 0 ? void 0 : _a.sender) === null || _b === void 0 ? void 0 : _b.id) === qq) {
+                    this.filteredMsg = message;
+                }
+                else {
+                    this.filteredMsg = undefined;
+                }
             }
         }
+        return this;
+    }
+    /**
+     * 消息接收者qq号筛选
+     */
+    filterByTaget(qq, message) {
+        // 不能直接在参数上设置默认值 因为装饰器里面获取不到参数
+        if (message) {
+            if (message.data.messageChain) {
+                if (message.data.messageChain.some(i => String(i.target) === qq)) {
+                    this.filteredMsg = message;
+                    return;
+                }
+            }
+        }
+        this.filteredMsg = undefined;
         return this;
     }
     /**
@@ -1119,13 +1923,13 @@ __decorate([
 __decorate([
     getMessageFilter_1.default(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], GetMessage.prototype, "filterBySender", null);
 __decorate([
     getMessageFilter_1.default(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], GetMessage.prototype, "filterByTaget", null);
 __decorate([
@@ -1142,6 +1946,7 @@ exports.default = GetMessage;
 /***/ 461:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -1168,43 +1973,74 @@ exports.EventFlow = {};
 // }
 // export const Flow = new FlowClass()
 // Flow.context.a = 1
-const ws = new ws_1.default(`${system_config_1.default.wsPath}/all?verifyKey=${system_config_1.default.verifyKey}&qq=${system_config_1.default.bot_qq}`);
-ws.on('open', function open() {
-    console.log('websocket连接成功！');
-    logger_1.default('ws', 'info', '连接成功！');
-});
-ws.on('error', (err) => {
-    console.log('websocket错误');
-    logger_1.default('error', 'error', err);
-});
-ws.on('close', (code, message) => {
-    console.log('websocket关闭');
-    logger_1.default('ws', 'info', `连接关闭！code: ${code}，message: ${message}`);
-});
-ws.addEventListener('message', ({ data }) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    ////////////////////// 检查session 必须第一步 //////////////////////////
-    const jsonMsg = JSON.parse(data);
-    if (jsonMsg.data.code === code_1.CodeEnum.success) {
-        session_1.getSession(jsonMsg);
-        return;
-    }
-    ////////////////////////////////////////////////////////////////////////
-    // 上下文对象
-    const context = {
-        message: jsonMsg,
-        targetQQ: jsonMsg.data.sender.id,
-        text: (_b = (_a = jsonMsg.data.messageChain) === null || _a === void 0 ? void 0 : _a.find(i => i.type === 'Plain')) === null || _b === void 0 ? void 0 : _b.text
-    };
-    // 顺序执行流程
-    for (let flow of Object.keys(exports.EventFlow)) {
-        const fnReturn = exports.EventFlow[flow](context);
-        if (fnReturn instanceof Promise) {
-            yield fnReturn;
+class WS {
+    static getWS() {
+        if (WS.WSInstance) {
+            return WS.WSInstance;
+        }
+        else {
+            return WS.createWS();
         }
     }
-}));
-exports.default = ws;
+    static createWS() {
+        const ws = new ws_1.default(`${system_config_1.default.wsPath}/all?verifyKey=${system_config_1.default.verifyKey}&qq=${system_config_1.default.bot_qq}`);
+        ws.on('open', function open() {
+            console.log('websocket连接成功！');
+            logger_1.default('ws', 'info', '连接成功！');
+        });
+        ws.on('error', (err) => {
+            console.log('websocket错误');
+            logger_1.default('error', 'error', err);
+            this.reconnect();
+        });
+        ws.on('close', (code, message) => {
+            console.log('websocket关闭');
+            logger_1.default('ws', 'info', `连接关闭！code: ${code}，message: ${message}`);
+            this.reconnect();
+        });
+        ws.onmessage = ({ data }) => __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c, _d, _e, _f, _g;
+            ////////////////////// 检查session 必须第一步 //////////////////////////
+            const jsonMsg = JSON.parse(data.toString());
+            if (jsonMsg.data.code === code_1.CodeEnum.success) {
+                session_1.getSession(jsonMsg);
+                return;
+            }
+            ////////////////////////////////////////////////////////////////////////
+            // 上下文对象
+            const context = {
+                message: jsonMsg,
+                targetQQ: String((_c = (_b = (_a = jsonMsg) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.sender) === null || _c === void 0 ? void 0 : _c.id),
+                text: (_g = (_f = (_e = (_d = jsonMsg) === null || _d === void 0 ? void 0 : _d.data) === null || _e === void 0 ? void 0 : _e.messageChain) === null || _f === void 0 ? void 0 : _f.find(i => i.type === 'Plain')) === null || _g === void 0 ? void 0 : _g.text
+            };
+            // 顺序执行流程
+            for (let flow of Object.keys(exports.EventFlow)) {
+                const fnReturn = exports.EventFlow[flow](context);
+                if (fnReturn instanceof Promise) {
+                    yield fnReturn;
+                }
+            }
+        });
+        WS.WSInstance = ws;
+        return ws;
+    }
+    static reconnect() {
+        if (WS.reconnection)
+            return;
+        logger_1.default('ws', 'info', `正在重连${++WS.reConnectCount}次`);
+        if (WS.reConnectCount >= 10) {
+            logger_1.default('ws', 'error', '重连超时');
+            return;
+        }
+        WS.reconnection = true;
+        setTimeout(() => {
+            WS.createWS();
+            WS.reconnection = false;
+        }, 2000);
+    }
+}
+WS.reConnectCount = 0;
+exports.default = WS.getWS();
 
 
 /***/ }),
@@ -1212,6 +2048,7 @@ exports.default = ws;
 /***/ 178:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -1400,6 +2237,7 @@ exports.default = SendMessage;
 /***/ 391:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -1474,6 +2312,7 @@ exports.default = new ToolKit();
 /***/ 139:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("@reduxjs/toolkit");
 
 /***/ }),
@@ -1481,6 +2320,7 @@ module.exports = require("@reduxjs/toolkit");
 /***/ 349:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("dayjs");
 
 /***/ }),
@@ -1488,6 +2328,7 @@ module.exports = require("dayjs");
 /***/ 455:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("log4js");
 
 /***/ }),
@@ -1495,6 +2336,7 @@ module.exports = require("log4js");
 /***/ 619:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("mongoose");
 
 /***/ }),
@@ -1502,6 +2344,7 @@ module.exports = require("mongoose");
 /***/ 622:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("path");
 
 /***/ }),
@@ -1509,6 +2352,7 @@ module.exports = require("path");
 /***/ 906:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("reflect-metadata");
 
 /***/ }),
@@ -1516,6 +2360,7 @@ module.exports = require("reflect-metadata");
 /***/ 439:
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("ws");
 
 /***/ })
@@ -1548,15 +2393,16 @@ module.exports = require("ws");
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
+"use strict";
 var exports = __webpack_exports__;
 var __webpack_unused_export__;
 
 __webpack_unused_export__ = ({ value: true });
+__webpack_require__(906);
 __webpack_require__(40);
 __webpack_require__(461);
-__webpack_require__(906);
 __webpack_require__(903);
 
 })();
