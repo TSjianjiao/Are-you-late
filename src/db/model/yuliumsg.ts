@@ -34,9 +34,11 @@ const YuliuMsgSchema = new Schema<YuliuMsg, IYuliuMsgModel>({
 class LoadClass {
   @tryCatchPromise()
   static async saveMsg(this: YuliuMsg & Model<YuliuMsg>, msg: string) {
-    await this.create({
-      msg
-    })
+    if(msg) {
+      await this.create({
+        msg
+      })
+    }
   }
 }
 YuliuMsgSchema.loadClass(LoadClass)
