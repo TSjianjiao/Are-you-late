@@ -15,6 +15,8 @@ import { EventFlow } from './utils/ws'
 import BetModel from '@/db/model/bet'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
+import 'dayjs/locale/zh-cn'
+
 import BaseConfig from './config/base.config'
 import FlashImageModel from './db/model/flashImage'
 import YuliuMsgModel from './db/model/yuliumsg'

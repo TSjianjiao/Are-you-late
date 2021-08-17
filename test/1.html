@@ -5,23 +5,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <style>
-
-    .a {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      border: solid 20px #000;
-      padding: 50px;
-    }
-    .b {
-      padding-top: 40px;
-      padding-left: 40px;
-    }
-  </style>
+  <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+  <script src="https://unpkg.com/dayjs@1.8.21/locale/zh-cn.js"></script>
 </head>
 <body>
-  <div class="a"></div>
-  <div class="b">你发现我了</div>
+  <script>
+    // dayjs.locale('zh-cn')
+    console.log(dayjs())
+    console.log(dayjs().locale('zh-cn'))
+  </script>
 </body>
 </html>
