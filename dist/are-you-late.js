@@ -176,7 +176,7 @@ ws_1.EventFlow.signIn = (context) => __awaiter(void 0, void 0, void 0, function*
         // 随机发积分
         const userPoint = randomPoint_1.default();
         const find = yield userPoints_1.default.findByQQ(targetQQ);
-        const { success: SignInSuccess, message: SignInMessage } = yield signIn_1.default.signIn(targetQQ);
+        const { success: SignInSuccess, message: SignInMessage } = yield signIn_1.default.signIn(targetQQ, userPoint);
         if (SignInSuccess) {
             const { success: addPointSuccess, message: addPointMessage } = yield find.addPoint(userPoint);
             toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
@@ -531,6 +531,43 @@ ws_1.EventFlow.pointsRank = (context) => __awaiter(void 0, void 0, void 0, funct
             let sendStr = t.output();
             toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
                 .plain('\n' + sendStr + '\n')
+                .exec();
+        }
+    }
+});
+// 时间段maybe
+ws_1.EventFlow.queryMaybe = (context) => __awaiter(void 0, void 0, void 0, function* () {
+    const { message, targetQQ, commandMessage, commandText } = context;
+    const [word, value] = botCommand_1.getParamCommand(commandText);
+    // 默认今天
+    let date = dayjs_1.default();
+    if (word === '查询眉笔') {
+        if (value) {
+            if (dayjs_1.default(value).isValid()) {
+                date = dayjs_1.default(value);
+            }
+        }
+        const res = yield signIn_1.default.find({
+            signInTime: {
+                $gt: date.startOf('date').toDate(),
+                $lt: date.endOf('date').toDate()
+            },
+            point: {
+                $lt: 5
+            }
+        }).sort({ point: 1 }).exec();
+        if (res.length > 0) {
+            toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+                .plain(`${date.format('MM[月]DD[日]')}的眉笔是\n`)
+                .at(res[0].qq)
+                .plain('\n让我们恭喜ta')
+                .face(undefined, '庆祝')
+                .face(undefined, '庆祝')
+                .exec();
+        }
+        else {
+            toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
+                .plain(`${date.format('MM[月]DD[日]')}没有眉笔\n`)
                 .exec();
         }
     }
@@ -1028,20 +1065,25 @@ const SignInSchema = new mongoose_1.Schema({
         type: mongoose_1.Schema.Types.Date,
         require: false,
         default: () => dayjs_1.default().toDate()
+    },
+    point: {
+        type: mongoose_1.Schema.Types.Number,
+        require: true,
     }
 });
 class LoadClass {
-    static signIn(qq) {
+    static signIn(qq, point) {
         return __awaiter(this, void 0, void 0, function* () {
             const find = yield this.findOne({
                 qq,
                 signInTime: {
                     $gt: dayjs_1.default().startOf('date').toDate()
-                }
+                },
             }).exec();
             if (!find) {
                 yield this.create({
-                    qq
+                    qq,
+                    point: point !== null && point !== void 0 ? point : 0
                 });
             }
             else {
@@ -1053,7 +1095,7 @@ class LoadClass {
 __decorate([
     tryCatchPromise_1.default(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], LoadClass, "signIn", null);
 SignInSchema.loadClass(LoadClass);

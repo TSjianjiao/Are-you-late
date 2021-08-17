@@ -166,7 +166,7 @@ EventFlow.signIn = async (context) => {
     // 随机发积分
     const userPoint = randomPoint()
     const find = await UserPointsModel.findByQQ(targetQQ)
-    const { success: SignInSuccess, message: SignInMessage }  = await SignInModel.signIn(targetQQ)
+    const { success: SignInSuccess, message: SignInMessage }  = await SignInModel.signIn(targetQQ, userPoint)
     if(SignInSuccess) {
       const  {success: addPointSuccess, message: addPointMessage} = await find.addPoint(userPoint)
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
@@ -574,6 +574,43 @@ EventFlow.pointsRank = async (context) => {
         .exec()
     }
 
+  }
+}
+
+// 时间段maybe
+EventFlow.queryMaybe = async (context) => {
+  const { message, targetQQ, commandMessage, commandText } = context
+  const [word, value] = getParamCommand(commandText)
+  // 默认今天
+  let date = dayjs()
+  if(word === '查询眉笔') {
+    if(value) {
+      if(dayjs(value).isValid()) {
+        date = dayjs(value)
+      }
+    }
+    const res = await SignInModel.find({
+      signInTime: {
+        $gt: date.startOf('date').toDate(),
+        $lt: date.endOf('date').toDate()
+      },
+      point: {
+        $lt: 5
+      }
+    }).sort({point: 1}).exec()
+    if(res.length > 0) {
+      ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
+        .plain(`${date.format('MM[月]DD[日]')}的眉笔是\n`)
+        .at(res[0].qq)
+        .plain('\n让我们恭喜ta')
+        .face(undefined,'庆祝')
+        .face(undefined,'庆祝')
+        .exec()
+    }else {
+      ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
+        .plain(`${date.format('MM[月]DD[日]')}没有眉笔\n`)
+        .exec()
+    }
   }
 }
 
