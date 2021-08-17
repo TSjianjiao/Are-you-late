@@ -604,6 +604,7 @@ EventFlow.queryMaybe = async (context) => {
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .plain(`${date.format('MM[月]DD[日]')}的眉笔是\n`)
         .at(res[0].qq)
+        .plain(`\nta通过努力签到获得了${res[0].point}分！\n`)
         .plain('\n让我们恭喜ta')
         .face(undefined,'庆祝')
         .face(undefined,'庆祝')

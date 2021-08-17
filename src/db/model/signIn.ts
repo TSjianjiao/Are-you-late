@@ -10,6 +10,8 @@ export interface SignIn {
   qq: string
   /** 押注分数 默认今天*/
   signInTime?: Date
+  /** 签到获得积分 */
+  point: number
 }
 interface DocMethod {
 
