@@ -1233,9 +1233,11 @@ const YuliuMsgSchema = new mongoose_1.Schema({
 class LoadClass {
     static saveMsg(msg) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.create({
-                msg
-            });
+            if (msg) {
+                yield this.create({
+                    msg
+                });
+            }
         });
     }
 }
