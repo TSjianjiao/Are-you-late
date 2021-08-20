@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .flex-box {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 16px;
+            justify-content: space-between;
+            width: 400px;
+            border: 1px solid #60f;
+        }
+        
+        .flex-box .box {
+            width: 48%;
+            height: 80px;
+            background: #f60;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex-box">
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+    <script>
+        let status = 0; //0未开始，1押注阶段，2赛马进行中
+        let allDistance = 1000 //总距离
+        let timer, timer2 //备用定时器，timer押注阶段，timer2赛马阶段
+        let horseList = [{
+                id: 1,
+                name: '1号赛马娘', //马的名字
+                master: null, //投注者
+                goods: [], //使用的道具列表
+                distance: 0, //已经跑的距离
+            }, {
+                id: 2,
+                name: '2号赛马娘',
+                master: null,
+                goods: [],
+                distance: 0,
+            }, {
+                id: 3,
+                name: '3号赛马娘',
+                master: null,
+                goods: [],
+                distance: 0,
+            }, {
+                id: 4,
+                name: '4号赛马娘',
+                master: null,
+                goods: [],
+                distance: 0,
+            }]
+            //初始化
+        let init = () => {
+                let horseList = [{
+                    id: 1,
+                    name: '1号赛马娘', //马的名字
+                    master: null, //投注者
+                    goods: [], //使用的道具列表
+                    distance: 0, //已经跑的距离
+                }, {
+                    id: 2,
+                    name: '2号赛马娘',
+                    master: null,
+                    goods: [],
+                    distance: 0,
+                }, {
+                    id: 3,
+                    name: '3号赛马娘',
+                    master: null,
+                    goods: [],
+                    distance: 0,
+                }, {
+                    id: 4,
+                    name: '4号赛马娘',
+                    master: null,
+                    goods: [],
+                    distance: 0,
+                }]
+            }
+            //道具商店
+        let goodsList = [{
+                goodsid: 1,
+                name: '兴奋剂',
+                mark: '增加马的随机数上限100',
+                price: 20,
+
+            }, {
+                goodsid: 2,
+                name: '鞭子',
+                mark: '增加马的随机数下限50',
+                price: 10
+            }, {
+                goodsid: 3,
+                name: '超级兴奋剂',
+                mark: '增加马的上限300,有几率倒退',
+                price: 50
+            }]
+            //押注
+        let stake = (id, qq) => {
+                if (status != 1) {
+                    return '押注未开始'
+                }
+                horseList.forEach(item => {
+                    if (id == item) {
+                        if (!item.master) {
+                            item.master = qq
+
+                            //此处扣除参数积分
+
+                            return '押注成功'
+
+                        } else {
+                            return '押注失败，该马已经被压注'
+                        }
+                    }
+                })
+            }
+            //获取随机数
+        let random = (min = 0, max = 100) => {
+            return parseInt(Math.random() * (max - min + 1) + min)
+        }
+
+
+        //赛马阶段
+        let run = () => {
+            if (status != 2) {
+                return '赛马未开始'
+            }
+            clearInterval(timer)
+            horseList.forEach(item => {
+                    //判断有没有道具
+                    let min = 0,
+                        max = 100
+                    if (item.goods.length != 0) {
+                        item.goods.forEach(item2 => {
+                                if (item.goodsid == 1) {
+                                    max += 100
+                                } else if (item.goodsid == 2) {
+                                    min += 50
+                                } else if (item.goodsid == 3) {
+                                    max += 300,
+                                        min -= 100
+                                }
+                            })
+                            //道具清空
+                        item.goods = []
+                    }
+                    item.distance += random(min, max);
+                    //判断马有没有冲破终点
+                    if (item.distance / allDistance > 1) {
+                        status = 0
+                        clearInterval(timer2)
+                    }
+                    //输出实时的结果
+                    console.log(item.id, item.distance / allDistance)
+
+                })
+                //完成后排序
+            if (status == 0) {
+                horseList.sort((a, b) => {
+                    return b.distance / allDistance - a.distance / allDistance
+                })
+
+                console.log(horseList)
+            }
+
+        }
+
+        //使用道具id 马的id  goodsid 使用的道具id
+        let useGoods = (id, goodsid) => {
+            horseList.forEach(item => {
+                if (item.id == id) {
+                    item.goods.push(
+                        ...goodsList.filter(item2 => {
+                            return item2.id == goodsid
+                        })
+                    )
+
+                    //此处使用者需扣除道具的积分
+                }
+            })
+        }
+
+        let main = () => {
+            init()
+            let stakeTime = 0
+            status = 1
+            timer = setInterval(() => {
+                stakeTime++
+                //
+                console.log(stakeTime)
+                if (stakeTime > 10) {
+                    status = 2
+                }
+            }, 1000)
+
+            timer2 = setInterval(() => {
+                run()
+            }, 1000)
+        }
+        main()
+    </script>
+</body>
+
+</html>

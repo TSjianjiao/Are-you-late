@@ -3,17 +3,17 @@ export interface SessionState {
   session: string
 }
 const initialState: SessionState = {
-	session: ''
+  session: ''
 }
 
 export const sessionSlice = createSlice({
-	name: 'session',
-	initialState,
-	reducers: {
-		saveSession: (state, action:PayloadAction<string>) => {
-			state.session = action.payload
-		}
-	}
+  name: 'session',
+  initialState,
+  reducers: {
+    saveSession: (state, action:PayloadAction<string>) => {
+      state.session = action.payload
+    }
+  }
 })
 
 // // 处理异步

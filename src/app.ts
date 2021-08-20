@@ -579,7 +579,7 @@ EventFlow.pointsRank = async (context) => {
   }
 }
 
-// 时间段maybe
+// 查询眉笔
 EventFlow.queryMaybe = async (context) => {
   const { message, targetQQ, commandMessage, commandText } = context
   const [word, value] = getParamCommand(commandText)
