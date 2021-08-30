@@ -33,5 +33,5 @@ yarn-error.log*
 # vercel
 .vercel
 *.log
-**/*/db.config.ts
-**/*/system.config.ts
+**/db.config.ts
+**/system.config.ts
