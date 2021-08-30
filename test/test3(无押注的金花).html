@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //1 黑桃，2 红桃，3梅花，4方片
+        let pokeList = []
+        playerList = [] //参与者的数组
+            //获取随机数
+        const random = (min, max) => {
+            return parseInt(Math.random() * (max - min + 1) + min) - 1
+        }
+        let maxPoke = 53 //记录牌库数量
+        let playId = 1
+            //初始化
+        const init = () => {
+                maxPoke = 53 //记录牌库数量
+                playId = 1
+                pokeList = [
+
+                    {
+                        id: 1,
+                        mark: '♠A',
+                        color: 1,
+                        number: 1
+                    }, {
+                        id: 2,
+                        mark: '♠2',
+                        color: 1,
+                        number: 2
+                    }, {
+                        id: 3,
+                        mark: '♠3',
+                        color: 1,
+                        number: 3
+                    }, {
+                        id: 4,
+                        mark: '♠4',
+                        color: 1,
+                        number: 4
+                    }, {
+                        id: 5,
+                        mark: '♠5',
+                        color: 1,
+                        number: 5
+                    }, {
+                        id: 6,
+                        mark: '♠6',
+                        color: 1,
+                        number: 6
+                    }, {
+                        id: 7,
+                        mark: '♠7',
+                        color: 1,
+                        number: 7
+                    }, {
+                        id: 8,
+                        mark: '♠8',
+                        color: 1,
+                        number: 8
+                    }, {
+                        id: 9,
+                        mark: '♠9',
+                        color: 1,
+                        number: 9
+                    }, {
+                        id: 10,
+                        mark: '♠10',
+                        color: 1,
+                        number: 10
+                    }, {
+                        id: 11,
+                        mark: '♠J',
+                        color: 1,
+                        number: 11
+                    }, {
+                        id: 12,
+                        mark: '♠Q',
+                        color: 1,
+                        number: 12
+                    }, {
+                        id: 13,
+                        mark: '♠K',
+                        color: 1,
+                        number: 13
+                    }, {
+                        id: 14,
+                        mark: '♥A',
+                        color: 2,
+                        number: 1
+                    }, {
+                        id: 15,
+                        mark: '♥2',
+                        color: 2,
+                        number: 2
+                    }, {
+                        id: 16,
+                        mark: '♥3',
+                        color: 2,
+                        number: 3
+                    }, {
+                        id: 17,
+                        mark: '♥4',
+                        color: 2,
+                        number: 4
+                    }, {
+                        id: 18,
+                        mark: '♥5',
+                        color: 2,
+                        number: 5
+                    }, {
+                        id: 19,
+                        mark: '♥6',
+                        color: 2,
+                        number: 6
+                    }, {
+                        id: 20,
+                        mark: '♥7',
+                        color: 2,
+                        number: 7
+                    }, {
+                        id: 21,
+                        mark: '♥8',
+                        color: 2,
+                        number: 8
+                    }, {
+                        id: 22,
+                        mark: '♥9',
+                        color: 2,
+                        number: 9
+                    }, {
+                        id: 23,
+                        mark: '♥10',
+                        color: 2,
+                        number: 10
+                    }, {
+                        id: 24,
+                        mark: '♥J',
+                        color: 2,
+                        number: 11
+                    }, {
+                        id: 25,
+                        mark: '♥Q',
+                        color: 2,
+                        number: 12
+                    }, {
+                        id: 26,
+                        mark: '♥K',
+                        color: 2,
+                        number: 13
+                    }, {
+                        id: 27,
+                        mark: '♣A',
+                        color: 3,
+                        number: 1
+                    }, {
+                        id: 28,
+                        mark: '♣2',
+                        color: 3,
+                        number: 2
+                    }, {
+                        id: 29,
+                        mark: '♣3',
+                        color: 3,
+                        number: 3
+                    }, {
+                        id: 30,
+                        mark: '♣4',
+                        color: 3,
+                        number: 4
+                    }, {
+                        id: 31,
+                        mark: '♣5',
+                        color: 3,
+                        number: 5
+                    }, {
+                        id: 32,
+                        mark: '♣6',
+                        color: 3,
+                        number: 6
+                    }, {
+                        id: 33,
+                        mark: '♣7',
+                        color: 3,
+                        number: 7
+                    }, {
+                        id: 34,
+                        mark: '♣8',
+                        color: 3,
+                        number: 8
+                    }, {
+                        id: 35,
+                        mark: '♣9',
+                        color: 3,
+                        number: 9
+                    }, {
+                        id: 36,
+                        mark: '♣10',
+                        color: 3,
+                        number: 10
+                    }, {
+                        id: 37,
+                        mark: '♣J',
+                        color: 3,
+                        number: 11
+                    }, {
+                        id: 38,
+                        mark: '♣Q',
+                        color: 3,
+                        number: 12
+                    }, {
+                        id: 39,
+                        mark: '♣K',
+                        color: 3,
+                        number: 13
+                    }, {
+                        id: 40,
+                        mark: '♦A',
+                        color: 4,
+                        number: 1
+                    }, {
+                        id: 41,
+                        mark: '♦2',
+                        color: 4,
+                        number: 2
+                    }, {
+                        id: 42,
+                        mark: '♦3',
+                        color: 4,
+                        number: 3
+                    }, {
+                        id: 43,
+                        mark: '♦4',
+                        color: 4,
+                        number: 4
+                    }, {
+                        id: 44,
+                        mark: '♦5',
+                        color: 4,
+                        number: 5
+                    }, {
+                        id: 45,
+                        mark: '♦6',
+                        color: 4,
+                        number: 6
+                    }, {
+                        id: 46,
+                        mark: '♦7',
+                        color: 4,
+                        number: 7
+                    }, {
+                        id: 47,
+                        mark: '♦8',
+                        color: 4,
+                        number: 8
+                    }, {
+                        id: 48,
+                        mark: '♦9',
+                        color: 4,
+                        number: 9
+                    }, {
+                        id: 49,
+                        mark: '♦10',
+                        color: 4,
+                        number: 10
+                    }, {
+                        id: 50,
+                        mark: '♦J',
+                        color: 4,
+                        number: 11
+                    }, {
+                        id: 51,
+                        mark: '♦Q',
+                        color: 4,
+                        number: 12
+                    }, {
+                        id: 52,
+                        mark: '♦K',
+                        color: 4,
+                        number: 13
+                    }, {
+                        id: 53,
+                        mark: '小王',
+                        color: 0,
+                        number: 20
+                    }, {
+                        id: 54,
+                        mark: '大王',
+                        color: 0,
+                        number: 20
+                    },
+                ]
+            }
+            //判断牌型
+        const letMeSee = (list) => {
+                //1000000炸弹,100000同花顺，10000清一色，1000顺子，100对子，10单牌
+                //有鬼情况
+                if (list[2].number == 20) {
+                    //有双鬼
+                    if (list[1].number == 20) {
+                        //相同炸弹情况下，没有纯的炸弹牌大
+                        return 10000000 * list[0].number - 2
+                    }
+                    //对子加鬼
+                    if (list[0].number == list[1].number) {
+                        return 1000000 * list[0].number - 1
+                    }
+                    //顺子加鬼
+                    //考虑AKQ情况
+                    if (list[0].number == 1 && (list[1].number == 13 || list[1].number == 12)) {
+                        if (list[0].color == list[1].color) {
+                            return 100000 * 13 - 1
+                        } else {
+                            return 1000 * 13 - 1
+                        }
+                    }
+                    if (list[0].number + 1 == list[1].number) {
+                        if (list[0].color == list[1].color) {
+                            return 100000 * list[1].number - 1
+                        } else {
+                            return 1000 * list[1].number - 1
+                        }
+                    }
+                    if (list[0].number + 2 == list[1].number) {
+                        if (list[0].color == list[1].color) {
+                            return 100000 * (list[1].number - 1) - 1
+                        } else {
+                            return 1000 * list[1].number - 1
+                        }
+                    }
+
+                    //清一色
+                    if (list[0].color == list[1].color) {
+                        return 10000 * 14 + list[1].number * 100 + list[0].number
+                    }
+                    //单牌组成对子
+                    return 100 * list[1].number + list[0].number
+                }
+                //无鬼情况
+                if (list[0].number == list[1].number && list[1].number == list[2].number) {
+                    return 1000000 * list[0].number
+                }
+                //或者后面考虑AKQ的情况，顺子or同花顺
+                if (list[0].number + 1 == list[1].number && list[1].number + 1 == list[2].number || (list[0].number == 1 && list[1].number == 12 && list[2].number == 13)) {
+                    if (list[0].color == list[1].color && list[0].color == list[2].color) {
+                        return 100000 * list[1].number
+                    } else {
+                        return 1000 * list[1].number
+                    }
+                }
+                //清一色
+                if (list[0].color == list[1].color && list[0].color == list[2].color) {
+                    return 10000 * list[0].number + 100 * list[1].number + list[2].number
+                }
+                //对子
+                if ((list[0].number == list[1].number && list[1].number != list[2].number)) {
+                    return list[0].number == 1 ? 100 * 14 + 100 * 14 + list[2].number : 100 * list[0].number + 100 * list[0].number + list[2].number
+                }
+                if (list[0].number != list[1].number && list[1].number == list[2].number) {
+                    return 100 * list[2].number + 100 * list[1].number + list[0].number
+                }
+                //单牌
+                return list[0].number == 1 ? 14 * 10 + 5 * list[1].number + list[2].number : list[0].number + 5 * list[1].number + 10 * list[2].number
+
+            }
+            //结算
+        const getMoney = () => {
+                playerList.forEach(item => {
+                    console.log(`玩家${item.qq}的牌是:${item.list[0].mark} ${item.list[1].mark} ${item.list[2].mark}`)
+                })
+
+                playerList.sort((a, b) => {
+
+                    return b.value - a.value
+                })
+                console.log(`获胜的是${playerList[0].qq}:他的牌是:${playerList[0].list[0].mark} ${playerList[0].list[1].mark} ${playerList[0].list[2].mark}`)
+            }
+            //获取参加人数
+        const join = (qq) => {
+                let temp = {}
+                temp.qq = qq
+                temp.playId = playId
+                temp.list = []
+                playerList.push(temp)
+                playId++
+            }
+            //发牌
+        const getPoke = () => {
+                if (playerList.length < 2) {
+                    return '参与人数错误'
+                }
+
+                playerList.forEach(temp => {
+                        //此处每个人扣除积分
+                        for (let i = 0; i < 3; i++) {
+                            let num = random(1, maxPoke)
+                            temp.list.push(pokeList[num])
+                            pokeList.splice(num, 1)
+                            maxPoke--
+                        }
+                        //0炸弹,1同花顺，2清一色，3顺子，4对子，5散牌
+                        temp.list.sort((a, b) => {
+                            return a.number - b.number
+                        })
+                        temp.value = letMeSee(temp.list)
+                    })
+                    //这里将结果私发给每个人
+            }
+            //押注
+        const giveMoney = () => {
+
+            //待开发
+
+        }
+        const main = () => {
+            init()
+                //请监听此函数，传入正确的QQ号
+            join('10000')
+            join('20000')
+            getPoke()
+            getMoney()
+        }
+
+        main()
+    </script>
+</body>
+
+</html>

@@ -24,6 +24,7 @@ module.exports = {
     },
   },
   // 重要
+  // node项目 不用全都打包 全部外部依赖
   externals: externals,
   module: {
     rules: [

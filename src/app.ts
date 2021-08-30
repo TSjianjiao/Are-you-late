@@ -1,25 +1,31 @@
+// config
 import SystemConfig from './config/system.config'
-import TextTable from '@/utils/textTable'
+import BaseConfig from './config/base.config'
 
+// util
+import TextTable from '@/utils/textTable'
 import ToolKit from '@/utils/ws/toolkits'
 import { commandList, getParamCommand, isBetCommand, isCommand, isQueryBet, isQueryPoints, isSignInCommand } from '@/utils/botCommand'
+import randomPoint from './utils/randomPoint'
+import { EventFlow } from './utils/ws'
 
+
+// model
 import GameUser from '@/db/model/gameUser'
 import SignInModel from '@/db/model/signIn'
 import UserPointsModel from '@/db/model/userPoints'
-import bet, { betType, betTypeText, Bet, betState, betStateText} from '@/db/model/bet'
+import BetModel, { betType, betTypeText, Bet, betState, betStateText} from '@/db/model/bet'
+import FlashImageModel from '@/db/model/flashImage'
+import YuliuMsgModel from '@/db/model/yuliumsg'
 
+// types
 import { GroupMessage, ReceiveMessage, Plain } from '@/types/receiveMessage'
-import randomPoint from './utils/randomPoint'
-import { EventFlow } from './utils/ws'
-import BetModel from '@/db/model/bet'
+
+// module
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import 'dayjs/locale/zh-cn'
 
-import BaseConfig from './config/base.config'
-import FlashImageModel from './db/model/flashImage'
-import YuliuMsgModel from './db/model/yuliumsg'
 
 const lateRegexp = /迟到/gi
 const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到|迟不到/gi
@@ -99,9 +105,9 @@ EventFlow.findFlashImage = async (context) => {
       if(res.length <= 0) throw new Error('\n没有数据')
       let msg = ''
       msg = res.reduce((pre, cur, curIndex) => {
-        return pre += `\n${dayjs(cur.createTime).format('YYYY-MM-DD')}：${cur.url}`
+        return pre += `\n${ dayjs(cur.createTime).format('YYYY-MM-DD') }：${ cur.url }`
       }, '')
-      throw new Error(`\n<${value}>的最近${limit}张闪照地址：` + msg )
+      throw new Error(`\n<${ value }>的最近${ limit }张闪照地址：` + msg )
     }catch({message}) {
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .plain(message)
@@ -136,7 +142,7 @@ EventFlow.bet = async (context) => {
     // 成功提示
     ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
       .at(targetQQ)
-      .plain(`\n押注${betTypeText[type]}：${value}积分`)
+      .plain(`\n押注${ betTypeText[type] }：${ value }积分`)
       .face(undefined, '吃糖')
       .exec()
   }
@@ -150,7 +156,7 @@ EventFlow.queryPoints = async (context) => {
     if(find) {
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .at(targetQQ)
-        .plain(`\n当前还剩${find.remainPoints}积分\n${find.remainPoints < 10 ? '穷逼！' : find.remainPoints >1000 ? '增有钱呐' : ''}`)
+        .plain(`\n当前还剩${ find.remainPoints }积分\n${ find.remainPoints < 10 ? '穷逼！' : find.remainPoints >1000 ? '增有钱呐' : '' }`)
         .exec()
       return
     }
@@ -173,12 +179,12 @@ EventFlow.signIn = async (context) => {
       const  {success: addPointSuccess, message: addPointMessage} = await find.addPoint(userPoint)
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .at(targetQQ)
-        .plain(addPointSuccess ? `\n签到成功！\n获得积分${userPoint}!\n${userPoint <= 5 ? 'maybe!' : ''}` : `\n签到失败：\n${addPointMessage}`)
+        .plain(addPointSuccess ? `\n签到成功！\n获得积分${ userPoint }!\n${ userPoint <= 5 ? 'maybe!' : '' }` : `\n签到失败：\n${ addPointMessage }`)
         .exec()
     }else {
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
         .at(targetQQ)
-        .plain(`\n签到失败：${SignInMessage}`)
+        .plain(`\n签到失败：${ SignInMessage }`)
         .exec()
     }
   }
@@ -312,9 +318,9 @@ EventFlow.queryBet = async (context) => {
       .at(targetQQ)
       .plain(`
       今日投注情况：
-      迟到：${lateTotal}积分（${lateNum}人）
-      不迟到：${notLateTotal}积分（${notLateNum}人）
-      ${forecast ? `<${targetQQ}>已投注<${betTypeText[res[0].targetUserBet[0].betType]}>预计可获得：${forecast}积分` : ''}
+      迟到：${ lateTotal }积分（${ lateNum }人）
+      不迟到：${ notLateTotal }积分（${ notLateNum }人）
+      ${ forecast ? `<${ targetQQ }>已投注<${ betTypeText[res[0].targetUserBet[0].betType] }>预计可获得：${ forecast }积分` : '' }
       `)
       .exec()
   }
@@ -457,7 +463,7 @@ EventFlow.accountBet = async (context) => {
       // const t = new Table
       const t = new TextTable
 
-      todayAllBet.forEach(function(data) {
+      todayAllBet.forEach(function (data) {
         // 计算盈利
         const profit = caclPoint(data)
 
@@ -497,7 +503,7 @@ EventFlow.accountBet = async (context) => {
     }
     ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
       .at(targetQQ)
-      .plain('\n' + `${ (isAreadyAccount || type !== undefined) ? `已结算<${ betTypeText[type] || betStateText[todayAllBet[0].betState]}>` : '未结算' }` + '\n' + sendStr + '\n')
+      .plain('\n' + `${ (isAreadyAccount || type !== undefined) ? `已结算<${ betTypeText[type] || betStateText[todayAllBet[0].betState] }>` : '未结算' }` + '\n' + sendStr + '\n')
       .exec()
   }
 }
@@ -602,16 +608,16 @@ EventFlow.queryMaybe = async (context) => {
     }).sort({point: 1}).exec()
     if(res.length > 0) {
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
-        .plain(`${date.format('MM[月]DD[日]')}的眉笔是\n`)
+        .plain(`${ date.format('MM[月]DD[日]') }的眉笔是\n`)
         .at(res[0].qq)
-        .plain(`\nta通过努力签到获得了${res[0].point}分！\n`)
+        .plain(`\nta通过努力签到获得了${ res[0].point }分！\n`)
         .plain('\n让我们恭喜ta')
         .face(undefined,'庆祝')
         .face(undefined,'庆祝')
         .exec()
     }else {
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
-        .plain(`${date.format('MM[月]DD[日]')}没有眉笔\n`)
+        .plain(`${ date.format('MM[月]DD[日]') }没有眉笔\n`)
         .exec()
     }
   }
@@ -665,12 +671,13 @@ EventFlow.queryMaybe = async (context) => {
 // }
 
 // 帮助
+
 EventFlow.help = async (context) => {
   const { message, targetQQ, commandText, commandMessage } = context
   if(isCommand(commandText, /命令/gi)) {
     let str = ''
     for(let key in commandList) {
-      str += `\n${key}：${commandList[key]}`
+      str += `\n${ key }：${ commandList[key] }`
     }
     ToolKit.send('sendGroupMessage', SystemConfig.group_qq)
       .at(targetQQ)

@@ -67,7 +67,7 @@ const BetSchema = new Schema<Bet>({
     type: Schema.Types.Number,
     require: false,
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         if(v < 0) {
           thorwCustomError('只能投注正数')
         }
@@ -102,9 +102,9 @@ const BetSchema = new Schema<Bet>({
 
 class LoadClass {
   @tryCatchPromise()
-  static async bet(this: Bet & Model<Bet> & StaticMethod, betType:betType, qq:string, point:number) {
+  static async bet (this: Bet & Model<Bet> & StaticMethod, betType:betType, qq:string, point:number) {
     if(dayjs().isAfter(BaseConfig.封盘时间())) {
-      thorwCustomError(`每天 ${BaseConfig.封盘时间().format('HH:mm:ss')} 前可投注！`)
+      thorwCustomError(`每天 ${ BaseConfig.封盘时间().format('HH:mm:ss') } 前可投注！`)
     }
 
     if(point <= 0 || !Number.isInteger(point)) {
@@ -119,7 +119,7 @@ class LoadClass {
     })
     const userPoint = await UserPointsModel.findByQQ(qq)
     if( betRecord && betRecord?.betType !== undefined && betRecord.betType !== betType) {
-      thorwCustomError(`你已认定摆子哥 ${betTypeText[betRecord.betType]}了!改不了咯~`)
+      thorwCustomError(`你已认定摆子哥 ${ betTypeText[betRecord.betType] }了!改不了咯~`)
     }
 
     if(userPoint.remainPoints >= point) {
@@ -142,7 +142,7 @@ class LoadClass {
   }
 
 
-  static async findByQQ(this: Bet & Model<Bet>, qq: string, otherFilter?: any) {
+  static async findByQQ (this: Bet & Model<Bet>, qq: string, otherFilter?: any) {
     const find = await this.findOne({qq, ...otherFilter}).exec()
     if(find) {
       return find

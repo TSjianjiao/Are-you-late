@@ -8,7 +8,7 @@ import { thorwCustomError } from './error'
  * @param jsonMsg
  * @returns
  */
-export function getSession(jsonMsg?: ReceiveMessage<SessionMsg>): string {
+export function getSession (jsonMsg?: ReceiveMessage<SessionMsg>): string {
   const { session } = store.getState().session
   if(session) {
     return session

@@ -36,7 +36,7 @@ class WS {
   private static reconnection: boolean
   private static reConnectCount: number = 0
 
-  public static getWS() {
+  public static getWS () {
     if(WS.WSInstance) {
       return WS.WSInstance
     }else {
@@ -44,9 +44,9 @@ class WS {
     }
   }
 
-  private static createWS() {
-    const ws = new WebSocket(`${SystemConfig.wsPath}/all?verifyKey=${SystemConfig.verifyKey}&qq=${SystemConfig.bot_qq}`)
-    ws.on('open', function open() {
+  private static createWS () {
+    const ws = new WebSocket(`${ SystemConfig.wsPath }/all?verifyKey=${ SystemConfig.verifyKey }&qq=${ SystemConfig.bot_qq }`)
+    ws.on('open', function open () {
       console.log('websocket连接成功！')
       logger('ws', 'info', '连接成功！')
     })
@@ -57,7 +57,7 @@ class WS {
     })
     ws.on('close', (code: number, message: string) => {
       console.log('websocket关闭')
-      logger('ws', 'info', `连接关闭！code: ${code}，message: ${message}`)
+      logger('ws', 'info', `连接关闭！code: ${ code }，message: ${ message }`)
       this.reconnect()
     })
     ws.onmessage = async ({data}) => {
@@ -87,9 +87,9 @@ class WS {
     return ws
   }
 
-  private static reconnect() {
+  private static reconnect () {
     if(WS.reconnection) return
-    logger('ws', 'info', `正在重连${++WS.reConnectCount}次`)
+    logger('ws', 'info', `正在重连${ ++WS.reConnectCount }次`)
     if(WS.reConnectCount >= 10) {
       logger('ws', 'error', '重连超时')
       return

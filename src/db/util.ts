@@ -15,7 +15,7 @@ export interface ModelError {
  * @param model 要被插入数据的model
  * @returns 插入成功返回`true`插入失败返回`false`
  */
-export async function addOnlyOneDocument<D>(id:Object, data: D, model: Model<any>):Promise<[ModelError, boolean]> {
+export async function addOnlyOneDocument<D> (id:Object, data: D, model: Model<any>):Promise<[ModelError, boolean]> {
   const find = await model.find(id).exec()
   if(find.length > 0) {
     return [{foo: {reason:{message: '已有记录'}}}, false]
@@ -35,6 +35,6 @@ export async function addOnlyOneDocument<D>(id:Object, data: D, model: Model<any
  * 获取第一个错误消息
  * @returns 错误消息
  */
-export function getOneErrorMessage(errors: Object): string {
+export function getOneErrorMessage (errors: Object): string {
   return errors[Object.keys(errors)[0]].reason.message
 }
