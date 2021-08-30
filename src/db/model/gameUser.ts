@@ -1,5 +1,5 @@
 
-import { Document, Model, Query, Schema, connect, model, models } from 'mongoose';
+import { Document, Model, Query, Schema, connect, model, models } from 'mongoose'
 export interface GameUser {
   qq: string;
   memberName: string;

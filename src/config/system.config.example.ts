@@ -2,7 +2,6 @@ const runOnPro = process.env.NODE_ENV === 'production'
 export interface SystemConfigInterface {
   wsPath: string
   httpPath: string
-  webPath: string
   verifyKey:  number
   bot_qq: string
   group_qq: string
@@ -12,21 +11,19 @@ export interface SystemConfigInterface {
 
 const SystemConfig:SystemConfigInterface  = {
   /** 服务器地址 */
-  wsPath: runOnPro ?  'ws://172.17.82.247:3002' : 'ws://ws.dangdangdang.top',
+  wsPath: '',
   /** http地址 */
-  httpPath: runOnPro ? 'http://172.17.82.247:3001' : 'http://api.dangdangdang.top',
-  /** 前端请求地址 */
-  webPath: 'http://172.17.82.247:3003',
+  httpPath: '',
   /** 鉴权key */
-  verifyKey:  1234567890,
+  verifyKey:  1,
   /** bot的qq号 */
-  bot_qq: '1092946821',
+  bot_qq: '',
   /** qq群号 */
-  group_qq: '599869861',
+  group_qq: '',
   /** 管理员qq */
-  admin_qq: '929175050',
+  admin_qq: '',
   /** 摆子哥qq */
-  yuliu_qq: '1916300010'
+  yuliu_qq: ''
 }
 
 export default SystemConfig
