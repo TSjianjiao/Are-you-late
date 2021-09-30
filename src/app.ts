@@ -125,10 +125,12 @@ EventFlow.bet = async (context) => {
     const type = words.search((notLateRegexp)) >= 0 ? betType.不迟到 :
       words.search((lateRegexp)) >= 0 ? betType.迟到 : undefined
 
-    if(type === undefined) return
+    if(type === undefined) {
+      return
+    }
 
     // 存储下注积分
-    const { success, message } = await BetModel.bet(type, targetQQ, Number(value))
+    const { success, message } = await BetModel.bet(type, targetQQ, value)
 
     if(message) {
       ToolKit.send('sendGroupMessage', SystemConfig.group_qq)

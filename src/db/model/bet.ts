@@ -6,10 +6,11 @@ import { thorwCustomError } from '@/utils/error'
 import dayjs from 'dayjs'
 import { Document, Model, Query, Schema, connect, model, models } from 'mongoose'
 import UserPointsModel from './userPoints'
+const allInRegexp = /梭哈|allin/gi
 
 export enum betType {
   迟到,
-  不迟到
+  不迟到,
 }
 export const betTypeText = {
   [betType.迟到]: '迟到',
@@ -53,7 +54,7 @@ interface StaticMethod {
   /**
    * 下注
    *  */
-  bet(betType:betType, qq:string, point: number): Promise<TransactionResponse>
+  bet(betType:betType, qq:string, point: number | string): Promise<TransactionResponse>
 }
 type IBetModel = Model<Bet, {}, DocMethod> & StaticMethod
 
@@ -102,13 +103,10 @@ const BetSchema = new Schema<Bet>({
 
 class LoadClass {
   @tryCatchPromise()
-  static async bet (this: Bet & Model<Bet> & StaticMethod, betType:betType, qq:string, point:number) {
+  static async bet (this: Bet & Model<Bet> & StaticMethod, betType:betType, qq:string, point:number | string) {
+    let _point = 0
     if(dayjs().isAfter(BaseConfig.封盘时间())) {
       thorwCustomError(`每天 ${ BaseConfig.封盘时间().format('HH:mm:ss') } 前可投注！`)
-    }
-
-    if(point <= 0 || !Number.isInteger(point)) {
-      thorwCustomError('只能为正整数')
     }
 
     const betRecord = await this.findByQQ(qq, {
@@ -117,15 +115,35 @@ class LoadClass {
         $lt: BaseConfig.封盘时间().toDate()
       }
     })
-    const userPoint = await UserPointsModel.findByQQ(qq)
     if( betRecord && betRecord?.betType !== undefined && betRecord.betType !== betType) {
       thorwCustomError(`你已认定摆子哥 ${ betTypeText[betRecord.betType] }了!改不了咯~`)
     }
 
-    if(userPoint.remainPoints >= point) {
+    const userPoint = await UserPointsModel.findByQQ(qq)
+
+    if(isNaN(point as number)) {
+      if(allInRegexp.test((point as string))) {
+        _point = userPoint.remainPoints
+      }else {
+        thorwCustomError('指令不正确')
+      }
+    }else {
+      if(point <= 0 || !Number.isInteger(point)) {
+        thorwCustomError('只能为正整数')
+      }
+      _point = Number(point)
+    }
+
+
+
+    if(_point === 0) {
+      thorwCustomError('你没有足够的积分！')
+    }
+
+    if(userPoint.remainPoints >= _point) {
       await betRecord.updateOne({
         $inc: {
-          betPoint: point
+          betPoint: _point
         },
         betTime: dayjs().toDate(),
         betType: betType
@@ -133,7 +151,7 @@ class LoadClass {
 
       await userPoint.updateOne({
         $inc: {
-          remainPoints: -point
+          remainPoints: -_point
         }
       }).exec()
     }else {

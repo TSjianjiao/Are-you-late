@@ -20,6 +20,25 @@
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -33,23 +52,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+// config
 const system_config_1 = __importDefault(__webpack_require__(522));
+const base_config_1 = __importDefault(__webpack_require__(391));
+// util
 const textTable_1 = __importDefault(__webpack_require__(841));
-const toolkits_1 = __importDefault(__webpack_require__(391));
+const toolkits_1 = __importDefault(__webpack_require__(397));
 const botCommand_1 = __webpack_require__(836);
+const randomPoint_1 = __importDefault(__webpack_require__(418));
+const ws_1 = __webpack_require__(461);
+// model
 const gameUser_1 = __importDefault(__webpack_require__(94));
 const signIn_1 = __importDefault(__webpack_require__(68));
 const userPoints_1 = __importDefault(__webpack_require__(90));
-const bet_1 = __webpack_require__(224);
-const randomPoint_1 = __importDefault(__webpack_require__(418));
-const ws_1 = __webpack_require__(461);
-const bet_2 = __importDefault(__webpack_require__(224));
+const bet_1 = __importStar(__webpack_require__(224));
+const flashImage_1 = __importDefault(__webpack_require__(814));
+const yuliumsg_1 = __importDefault(__webpack_require__(640));
+// module
 const dayjs_1 = __importDefault(__webpack_require__(349));
 const isBetween_1 = __importDefault(__webpack_require__(607));
 __webpack_require__(852);
-const base_config_1 = __importDefault(__webpack_require__(585));
-const flashImage_1 = __importDefault(__webpack_require__(814));
-const yuliumsg_1 = __importDefault(__webpack_require__(640));
 const lateRegexp = /迟到/gi;
 const notLateRegexp = /不迟到|没有迟到|不会迟到|不可能迟到|没迟到|准时到|准点到|迟不到/gi;
 dayjs_1.default.extend(isBetween_1.default);
@@ -139,10 +161,11 @@ ws_1.EventFlow.bet = (context) => __awaiter(void 0, void 0, void 0, function* ()
         // 匹配关键词
         const type = words.search((notLateRegexp)) >= 0 ? bet_1.betType.不迟到 :
             words.search((lateRegexp)) >= 0 ? bet_1.betType.迟到 : undefined;
-        if (type === undefined)
+        if (type === undefined) {
             return;
+        }
         // 存储下注积分
-        const { success, message } = yield bet_2.default.bet(type, targetQQ, Number(value));
+        const { success, message } = yield bet_1.default.bet(type, targetQQ, value);
         if (message) {
             toolkits_1.default.send('sendGroupMessage', system_config_1.default.group_qq)
                 .at(targetQQ)
@@ -206,7 +229,7 @@ ws_1.EventFlow.queryBet = (context) => __awaiter(void 0, void 0, void 0, functio
     const { message, targetQQ, commandText, commandMessage } = context;
     // const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(commandMessage).filterBySender(SystemConfig.admin_qq).exec()
     if (botCommand_1.isQueryBet(commandText)) {
-        const res = yield bet_2.default.aggregate([
+        const res = yield bet_1.default.aggregate([
             {
                 $facet: {
                     late: [
@@ -315,14 +338,15 @@ ws_1.EventFlow.queryBet = (context) => __awaiter(void 0, void 0, void 0, functio
 ws_1.EventFlow.accountBet = (context) => __awaiter(void 0, void 0, void 0, function* () {
     var _o, _p, _q, _r;
     const { message, targetQQ, commandMessage } = context;
-    const filterMsg = toolkits_1.default.get(commandMessage).filterBySender([system_config_1.default.admin_qq, system_config_1.default.yuliu_qq]).exec();
+    // const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(commandMessage).filterBySender([SystemConfig.admin_qq, SystemConfig.yuliu_qq]).exec()
+    const filterMsg = toolkits_1.default.get(commandMessage).exec();
     const [word, value] = botCommand_1.getParamCommand((_r = (_q = (_p = (_o = filterMsg === null || filterMsg === void 0 ? void 0 : filterMsg.data) === null || _o === void 0 ? void 0 : _o.messageChain) === null || _p === void 0 ? void 0 : _p.find(i => i.type === 'Plain')) === null || _q === void 0 ? void 0 : _q.text) !== null && _r !== void 0 ? _r : '');
     if (word === '结算') {
         // 结算命令type
         let type = value.search((notLateRegexp)) >= 0 ? bet_1.betType.不迟到 :
             value.search((lateRegexp)) >= 0 ? bet_1.betType.迟到 : undefined;
         // 查询今日所有投注
-        const todayAllBet = yield bet_2.default.aggregate([
+        const todayAllBet = yield bet_1.default.aggregate([
             {
                 $match: {
                     betTime: {
@@ -459,7 +483,7 @@ ws_1.EventFlow.accountBet = (context) => __awaiter(void 0, void 0, void 0, funct
                         remainPoints: i.betProfit
                     }
                 }).exec();
-                bet_2.default.updateOne({
+                bet_1.default.updateOne({
                     qq: i.qq
                 }, {
                     $set: {
@@ -543,7 +567,7 @@ ws_1.EventFlow.pointsRank = (context) => __awaiter(void 0, void 0, void 0, funct
         }
     }
 });
-// 时间段maybe
+// 查询眉笔
 ws_1.EventFlow.queryMaybe = (context) => __awaiter(void 0, void 0, void 0, function* () {
     const { message, targetQQ, commandMessage, commandText } = context;
     const [word, value] = botCommand_1.getParamCommand(commandText);
@@ -644,7 +668,7 @@ ws_1.EventFlow.help = (context) => __awaiter(void 0, void 0, void 0, function* (
 
 /***/ }),
 
-/***/ 585:
+/***/ 391:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
@@ -836,12 +860,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.betStateText = exports.betState = exports.betTypeText = exports.betType = void 0;
-const base_config_1 = __importDefault(__webpack_require__(585));
+const base_config_1 = __importDefault(__webpack_require__(391));
 const tryCatchPromise_1 = __importDefault(__webpack_require__(727));
 const error_1 = __webpack_require__(551);
 const dayjs_1 = __importDefault(__webpack_require__(349));
 const mongoose_1 = __webpack_require__(619);
 const userPoints_1 = __importDefault(__webpack_require__(90));
+const allInRegexp = /梭哈|allin/gi;
 var betType;
 (function (betType) {
     betType[betType["\u8FDF\u5230"] = 0] = "\u8FDF\u5230";
@@ -906,11 +931,9 @@ const BetSchema = new mongoose_1.Schema({
 class LoadClass {
     static bet(betType, qq, point) {
         return __awaiter(this, void 0, void 0, function* () {
+            let _point = 0;
             if (dayjs_1.default().isAfter(base_config_1.default.封盘时间())) {
                 error_1.thorwCustomError(`每天 ${base_config_1.default.封盘时间().format('HH:mm:ss')} 前可投注！`);
-            }
-            if (point <= 0 || !Number.isInteger(point)) {
-                error_1.thorwCustomError('只能为正整数');
             }
             const betRecord = yield this.findByQQ(qq, {
                 betTime: {
@@ -918,21 +941,38 @@ class LoadClass {
                     $lt: base_config_1.default.封盘时间().toDate()
                 }
             });
-            const userPoint = yield userPoints_1.default.findByQQ(qq);
             if (betRecord && (betRecord === null || betRecord === void 0 ? void 0 : betRecord.betType) !== undefined && betRecord.betType !== betType) {
                 error_1.thorwCustomError(`你已认定摆子哥 ${exports.betTypeText[betRecord.betType]}了!改不了咯~`);
             }
-            if (userPoint.remainPoints >= point) {
+            const userPoint = yield userPoints_1.default.findByQQ(qq);
+            if (isNaN(point)) {
+                if (allInRegexp.test(point)) {
+                    _point = userPoint.remainPoints;
+                }
+                else {
+                    error_1.thorwCustomError('指令不正确');
+                }
+            }
+            else {
+                if (point <= 0 || !Number.isInteger(point)) {
+                    error_1.thorwCustomError('只能为正整数');
+                }
+                _point = Number(point);
+            }
+            if (_point === 0) {
+                error_1.thorwCustomError('你没有足够的积分！');
+            }
+            if (userPoint.remainPoints >= _point) {
                 yield betRecord.updateOne({
                     $inc: {
-                        betPoint: point
+                        betPoint: _point
                     },
                     betTime: dayjs_1.default().toDate(),
                     betType: betType
                 }).exec();
                 yield userPoint.updateOne({
                     $inc: {
-                        remainPoints: -point
+                        remainPoints: -_point
                     }
                 }).exec();
             }
@@ -959,7 +999,7 @@ class LoadClass {
 __decorate([
     tryCatchPromise_1.default(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String, Number]),
+    __metadata("design:paramtypes", [Number, String, Object]),
     __metadata("design:returntype", Promise)
 ], LoadClass, "bet", null);
 BetSchema.loadClass(LoadClass);
@@ -1464,9 +1504,9 @@ function isBetCommand(text) {
         const comand = blockComand[1].split(' ');
         if (comand.length === 2) {
             const [words, value] = comand;
-            if (!isNaN(Number(value))) {
-                return [words, value];
-            }
+            // if(!isNaN(Number(value))) {
+            return [words, value];
+            // }
         }
     }
     return ['', ''];
@@ -2283,7 +2323,7 @@ exports.default = SendMessage;
 
 /***/ }),
 
-/***/ 391:
+/***/ 397:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
