@@ -329,7 +329,8 @@ EventFlow.queryBet = async (context) => {
 // 结算
 EventFlow.accountBet = async (context) => {
   const { message, targetQQ, commandMessage } = context
-  const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(commandMessage).filterBySender([SystemConfig.admin_qq, SystemConfig.yuliu_qq]).exec()
+  // const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(commandMessage).filterBySender([SystemConfig.admin_qq, SystemConfig.yuliu_qq]).exec()
+  const filterMsg = ToolKit.get<ReceiveMessage<GroupMessage>>(commandMessage).exec()
   const [word, value] = getParamCommand(filterMsg?.data?.messageChain?.find(i => i.type === 'Plain')?.text ?? '')
   if(word === '结算') {
 
@@ -622,6 +623,8 @@ EventFlow.queryMaybe = async (context) => {
     }
   }
 }
+
+
 
 // 抽奖
 // EventFlow.luckDraw = async (context) => {
