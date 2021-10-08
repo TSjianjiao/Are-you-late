@@ -121,19 +121,20 @@ class LoadClass {
 
     const userPoint = await UserPointsModel.findByQQ(qq)
 
-    if(isNaN(point as number)) {
+
+    const parsePoint = Number(point)
+    if(isNaN(parsePoint)) {
       if(allInRegexp.test((point as string))) {
         _point = userPoint.remainPoints
       }else {
         thorwCustomError('指令不正确')
       }
     }else {
-      if(point <= 0 || !Number.isInteger(point)) {
+      if(parsePoint <= 0 || !Number.isInteger(parsePoint)) {
         thorwCustomError('只能为正整数')
       }
-      _point = Number(point)
+      _point = parsePoint
     }
-
 
 
     if(_point === 0) {
