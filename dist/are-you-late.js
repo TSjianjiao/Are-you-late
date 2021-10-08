@@ -945,7 +945,8 @@ class LoadClass {
                 error_1.thorwCustomError(`你已认定摆子哥 ${exports.betTypeText[betRecord.betType]}了!改不了咯~`);
             }
             const userPoint = yield userPoints_1.default.findByQQ(qq);
-            if (isNaN(point)) {
+            const parsePoint = Number(point);
+            if (isNaN(parsePoint)) {
                 if (allInRegexp.test(point)) {
                     _point = userPoint.remainPoints;
                 }
@@ -954,10 +955,10 @@ class LoadClass {
                 }
             }
             else {
-                if (point <= 0 || !Number.isInteger(point)) {
+                if (parsePoint <= 0 || !Number.isInteger(parsePoint)) {
                     error_1.thorwCustomError('只能为正整数');
                 }
-                _point = Number(point);
+                _point = parsePoint;
             }
             if (_point === 0) {
                 error_1.thorwCustomError('你没有足够的积分！');
